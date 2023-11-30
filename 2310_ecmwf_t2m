@@ -37,7 +37,7 @@
       animateIn={false}
       showAtmosphere={false}
       globeImageUrl="../images/ecmwf_test3_final.png"
-      bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
+      bumpImageUrl="../images/earth-topology.png"
       backgroundColor="#00000000"
     />;
   };
