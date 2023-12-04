@@ -95,7 +95,7 @@
   <div class='legend-source'>Quelle: <a href="https://climate.copernicus.eu/surface-air-temperature-maps">Copernicus/ECMWF</a></div>
   </div>
 
-<div id="globeViz" align="center">
+<div id="globeViz" align="center" style="height:100%">
 <script type="text/jsx">
   const { useEffect, useRef } = React;
 
@@ -117,7 +117,6 @@
     return <Globe
       ref={globeEl}
       animateIn={false}
-      height='480'
       showAtmosphere={false}
       globeImageUrl="../images/ecmwf_test3_final.png"
       bumpImageUrl="../images/earth-topology.png"
