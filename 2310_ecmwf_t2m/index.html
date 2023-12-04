@@ -114,10 +114,13 @@
 
     }, []);
 
+    const h = window.innerHeight;
+
     return <Globe
       ref={globeEl}
       animateIn={false}
       showAtmosphere={false}
+      height={h*0.4}
       globeImageUrl="../images/ecmwf_test3_final.png"
       bumpImageUrl="../images/earth-topology.png"
       backgroundColor="#00000000"
