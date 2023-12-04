@@ -20,6 +20,42 @@
             margin: 5px;
             font-weight: bold;
         }
+
+      .my-legend .legend-title {
+    text-align: left;
+    margin-bottom: 8px;
+    font-weight: bold;
+    font-size: 90%;
+    }
+  .my-legend .legend-scale ul {
+    margin: 0;
+    padding: 0;
+    float: left;
+    list-style: none;
+    }
+  .my-legend .legend-scale ul li {
+    display: block;
+    float: left;
+    width: 50px;
+    margin-bottom: 6px;
+    text-align: center;
+    font-size: 80%;
+    list-style: none;
+    }
+  .my-legend ul.legend-labels li span {
+    display: block;
+    float: left;
+    height: 15px;
+    width: 50px;
+    }
+  .my-legend .legend-source {
+    font-size: 70%;
+    color: #999;
+    clear: both;
+    }
+  .my-legend a {
+    color: #777;
+    }
   
   </style>
 
@@ -36,6 +72,20 @@
 <body>
   <div id="wrapper" align="left">
     <h3 id="title">Wo auf der Welt war es im Oktober <b style="color:#b50025;">heißer</b> und <b style="color:#394dc3;">kälter</b> als im Durchschnitt 1961-1990</h3>
+  </div>
+
+  <div class='my-legend'>
+  <div class='legend-title'>The Title or Explanation of your Map</div>
+  <div class='legend-scale'>
+    <ul class='legend-labels'>
+      <li><span style='background:#F1EEF6;'></span>0 - 20%</li>
+      <li><span style='background:#BDC9E1;'></span>40%</li>
+      <li><span style='background:#74A9CF;'></span>60%</li>
+      <li><span style='background:#2B8CBE;'></span>80%</li>
+      <li><span style='background:#045A8D;'></span>100%</li>
+    </ul>
+  </div>
+  <div class='legend-source'>Source: <a href="#link to source">Name of source</a></div>
   </div>
 
 <div id="globeViz"></div>
