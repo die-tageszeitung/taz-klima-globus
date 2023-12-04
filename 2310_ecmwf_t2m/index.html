@@ -98,7 +98,9 @@
   <div class='legend-source'>Quelle: <a href="https://climate.copernicus.eu/surface-air-temperature-maps">Copernicus/ECMWF</a></div>
   </div>
 
-<div id="globeViz"></div>
+<div id="globeViz" style={{
+        marginLeft: `-500px`
+      }}></div>
 <script type="text/jsx">
   const { useEffect, useRef } = React;
 
@@ -117,22 +119,14 @@
 
     }, []);
 
-    return (
-      <div
-      style={{
-        marginTop: `-500px`
-      }}
-    >
-      <Globe
+    return <Globe
       ref={globeEl}
       animateIn={false}
       showAtmosphere={false}
       globeImageUrl="../images/ecmwf_test3_final.png"
       bumpImageUrl="../images/earth-topology.png"
       backgroundColor="#00000000"
-    />
-      </div>
-  );
+    />;
   };
 
   ReactDOM.render(
