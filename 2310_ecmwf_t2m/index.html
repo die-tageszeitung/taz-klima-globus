@@ -117,14 +117,22 @@
 
     }, []);
 
-    return <Globe
+    return (
+      <div
+      style={{
+        marginTop: `-100px`
+      }}
+    >
+      <Globe
       ref={globeEl}
       animateIn={false}
       showAtmosphere={false}
       globeImageUrl="../images/ecmwf_test3_final.png"
       bumpImageUrl="../images/earth-topology.png"
       backgroundColor="#00000000"
-    />;
+    />
+      </div>
+  );
   };
 
   ReactDOM.render(
