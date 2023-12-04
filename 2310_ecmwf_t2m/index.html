@@ -25,10 +25,6 @@
             font-weight: bold;
         }
 
-    #globeViz {
-            margin-top: -500px;
-        }
-
       .my-legend .legend-title {
       text-align: left;
       margin-left: 5px;
@@ -124,6 +120,8 @@
     return <Globe
       ref={globeEl}
       animateIn={false}
+      height='800'
+      width='800'
       showAtmosphere={false}
       globeImageUrl="../images/ecmwf_test3_final.png"
       bumpImageUrl="../images/earth-topology.png"
