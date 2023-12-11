@@ -11,10 +11,16 @@
             font-display: swap;
         }
 
+    @font-face {
+            font-family: 'AktivGrotesk_Rg';
+            src: url("https://taz.de/lib/taz-verlag-node/fonts/AktivGrotesk_W_Rg.woff2") format("woff2"), url("https://taz.de/lib/taz-verlag-node/fonts/AktivGrotesk_W_Rg.woff") format("woff");
+            font-display: swap;
+}
+
     html {
             height: 100%;
             background:  #ffffff;
-            font-family: KnileSemiBold,tazze, taz_bold, serif;
+            font-family: KnileSemiBold, serif;
         }
     
     body {
@@ -33,7 +39,7 @@
       text-align: left;
       margin-left: 5px;
       margin-bottom: 3px;
-      font-family: KnileSemiBold,tazze, taz_bold, serif;
+      font-family: AktivGrotesk_Rg, sans-serif;
       font-weight: normal;
       font-size: 80%;
       }
@@ -50,7 +56,7 @@
       padding-left: 1px;
       padding-right: 1px;
       margin-bottom: 3px;  
-      font-family: KnileSemiBold,tazze, taz_bold, serif;
+      font-family: AktivGrotesk_Rg, sans-serif;
       text-align: center;
       font-size: 65%;
       list-style: none;
@@ -64,6 +70,7 @@
       width: 20px;
       }
     .my-legend .legend-source {
+      font-family: AktivGrotesk_Rg, sans-serif;
       font-size: 55%;
       margin-left: 5px;
       color: #999;
