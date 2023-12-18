@@ -160,9 +160,9 @@
       polygonSideColor={() => 'rgba(0,0,0,0)'}
       polygonStrokeColor={() => '#000'}
       polygonLabel={({ properties: d }) => `
-        <div style="border-width:3px; border-style:solid; border-color:#000000; background-color:#FFFFFF;"><b style="background:#FFFFFF;color:black; padding:1px 4px">${d.GERMAN_NAME}:</b>
-        <p style="background:#FFFFFF;color:black; padding:1px 4px">Erderhitzung 2023: <i>${(d.mean<0?"":"+") + String(Math.round(d.mean * 10) / 10).replace('.',',')}°C</i></p>
-        <small style="background:#FFFFFF;color:black; padding:1px 4px">im Vergleich zum Durchschnitt 1961-1990</small></div>
+        <div style="border-width:3px; border-style:solid; border-color:#000000; background-color:#FFFFFF;"><b style="color:black; padding:1px 4px">${d.GERMAN_NAME}:</b>
+        <p style="color:black; padding:1px 4px">Erderhitzung 2023: <i>${(d.mean<0?"":"+") + String(Math.round(d.mean * 10) / 10).replace('.',',')}°C</i></p>
+        <small style="color:black; padding:1px 4px">im Vergleich zum Durchschnitt 1961-1990</small></div>
       `}
       onPolygonHover={setHoverD}
       polygonsTransitionDuration={300}
