@@ -160,7 +160,7 @@
       polygonSideColor={() => 'rgba(0,0,0,0)'}
       polygonStrokeColor={() => '#000'}
       polygonLabel={({ properties: d }) => `
-        <div style="border-width:3px; border-style:solid; border-color:#000000; background-color:#FFFFFF; line-height:1em;"><b style="color:black; padding:1px 4px">${d.GERMAN_NAME}</b><br>
+        <div style="border-width:3px; border-style:solid; border-color:#000000; background-color:#FFFFFF; line-height:1.2em;"><b style="color:black; padding:1px 4px">${d.GERMAN_NAME}</b><br>
         <big style="color:black; padding:1px 4px"><i>${(d.mean<0?"":"+") + String(Math.round(d.mean * 10) / 10).replace('.',',')}°C</i></big><br>
         <small style="color:black; padding:1px 4px">im Vergleich zum Durchschnitt 1961-1990</small></div>
       `}
