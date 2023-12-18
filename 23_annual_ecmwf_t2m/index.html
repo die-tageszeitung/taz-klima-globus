@@ -149,7 +149,7 @@
       () => Math.max(...countries.features.map(getVal)),
       [countries]
     );
-    colorScale.domain([0, maxVal]);
+    colorScale.domain([-4, 4]);
 
     const h = window.innerHeight;
 
@@ -165,9 +165,9 @@
       lineHoverPrecision={0}
 
       polygonsData={countries.features}
-      polygonAltitude={d => d === hoverD ? 0 : 0}
-      polygonCapColor={d => d === hoverD ? '#ffffffff' : '#ffffffff'}
-      polygonSideColor={() => 'rgba(0, 100, 0, 0.15)'}
+      polygonAltitude={d => d === hoverD ? 0.12 : 0.06}
+      polygonCapColor={d => d === hoverD ? colorScale(getVal(d)) : '#ffffffff'}
+      polygonSideColor={() => '#ffffffff'}
       polygonStrokeColor={() => '#000'}
       polygonLabel={({ properties: d }) => `
         <b>${d.SOVEREIGNT}:</b> <br />
