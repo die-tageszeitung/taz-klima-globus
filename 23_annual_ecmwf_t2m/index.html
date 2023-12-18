@@ -160,7 +160,7 @@
       polygonSideColor={() => 'rgba(0,0,0,0)'}
       polygonStrokeColor={() => '#000'}
       polygonLabel={({ properties: d }) => `
-        <b>${d.SOVEREIGNT}:</b> <br />
+        <b style="background:#FFFFFF;color:black; padding:1px 4px">${d.SOVEREIGNT}:</b> <br />
         Erderhitzung 2023: <i>${Math.round(d.mean * 10) / 10}°C</i>
       `}
       onPolygonHover={setHoverD}
