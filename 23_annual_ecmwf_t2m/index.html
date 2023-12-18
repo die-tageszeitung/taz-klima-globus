@@ -139,18 +139,12 @@
       // load data
       fetch('ne_110_final_data_reduced.geojson').then(res => res.json()).then(setCountries);
     }, []);
-
-    const colorScale = d3.scaleSequentialSqrt(d3.interpolateYlOrRd);
-
-    // GDP per capita (avoiding countries with small pop)
-    const getVal = feat => feat.properties.mean;
-
-    const maxVal = useMemo(
-      () => Math.max(...countries.features.map(getVal)),
-      [countries]
-    );
-    colorScale.domain([-4, 4]);
-
+  
+    const colorScale = d3.scaleLinear()
+        .domain([-4,4])
+        .interpolate(d3.interpolateHcl)
+        .range([d3.hcl('#394dc3'), d3.hcl('#b50025');
+                
     const h = window.innerHeight;
 
     return <Globe
@@ -173,7 +167,7 @@
         <b>${d.SOVEREIGNT}:</b> <br />
         Erderhitzung 2023: <i>${Math.round(d.mean * 10) / 10}</i>
       `}
-      onPolygonHover={setHoverD}
+      onPolygonClick={setHoverD}
       polygonsTransitionDuration={300}
     />;
   };
