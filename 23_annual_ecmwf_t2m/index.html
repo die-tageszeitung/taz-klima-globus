@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="de-DE">
+
+<head>
+  <style>
+    @font-face {
+            font-family: 'KnileSemiBold';
+            src: url('https://taz.de/lib/taz-verlag-node/fonts/Knile-SemiBold.woff2') format('woff');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+    @font-face {
+            font-family: 'AktivGrotesk_Rg';
+            src: url("https://taz.de/lib/taz-verlag-node/fonts/AktivGrotesk_W_Rg.woff2") format("woff2"), url("https://taz.de/lib/taz-verlag-node/fonts/AktivGrotesk_W_Rg.woff") format("woff");
+            font-display: swap;
+}
+
+    html {
+            height: 100%;
+            background:  #ffffff;
+            font-family: KnileSemiBold, serif;
+        }
+    
+    body {
+      color: #000000;
+      padding: 0;
+      margin: 0;
+    }
+
+    h3 {
+            font-size: 22px;
+            margin: 5px;
+            font-weight: bold;
+        }
+
+      .my-legend .legend-title {
+      text-align: left;
+      margin-left: 5px;
+      margin-bottom: 3px;
+      font-family: AktivGrotesk_Rg, sans-serif;
+      font-weight: normal;
+      font-size: 80%;
+      }
+    .my-legend .legend-scale ul {
+      margin: 5px;
+      padding: 0;
+      float: left;
+      list-style: none;
+      }
+    .my-legend .legend-scale ul li {
+      display: block;
+      float: left;
+      width: 20px;
+      padding-left: 1px;
+      padding-right: 1px;
+      margin-bottom: 3px;  
+      font-family: AktivGrotesk_Rg, sans-serif;
+      text-align: center;
+      font-size: 65%;
+      list-style: none;
+      }
+    .my-legend .legend-scale ul li + li {border-left: 1px solid #000; }
+
+    .my-legend ul.legend-labels li span {
+      display: block;
+      float: left;
+      height: 10px;
+      width: 20px;
+      }
+    .my-legend .legend-source {
+      font-family: AktivGrotesk_Rg, sans-serif;
+      font-size: 55%;
+      margin-left: 5px;
+      color: #999;
+      clear: both;
+      }
+    .my-legend a {
+      color: #777;
+      }
+  
+  </style>
+
+  <script src="//tools-static.wmflabs.org/cdnjs/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="//tools-static.wmflabs.org/cdnjs/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="//tools-static.wmflabs.org/cdnjs/ajax/libs/babel-standalone/7.23.4/babel.js"></script>
+
+  <script src="//tools-static.wmflabs.org/cdnjs/ajax/libs/three.js/0.158.0/three"></script>
+
+  <script src="../js/react-globe.gl.min.js"></script>
+  <!--<script src="../../dist/react-globe.gl.js"></script>-->
+</head>
+
+<body>
+  <div id="wrapper" align="left">
+    <h3 id="title">Wo auf der Welt war es im November besonders heiß?</h3>
+  </div>
+
+  <div class='my-legend'>
+  <div class='legend-title'>Temperaturabweichung in 2 Meter Höhe in °C<br> im Vergleich zum Durchschnitt 1961-1990</div>
+  <div class='legend-scale'>
+    <ul class='legend-labels'>
+      <li><span style='background:#394dc3;'></span>-4</li>
+      <li><span style='background:#8caefe;'></span>-2</li>
+      <li><span style='background:#dcdddd;'></span>0</li>
+      <li><span style='background:#f4997b;'></span>+2</li>
+      <li><span style='background:#b50025;'></span>+4</li>
+    </ul>
+  </div>
+  <div class='legend-source'>Quelle: <a href="https://climate.copernicus.eu/surface-air-temperature-maps" target="_blank">Copernicus/ECMWF</a></div>
+  </div>
+
+<div id="globeViz" align="center" style="height:100%">
+<script type="text/jsx">
+  const { useEffect, useRef } = React;
+
+  const World = () => {
+    const globeEl = useRef();
+
+    useEffect(() => {
+      const globe = globeEl.current;
+
+      // Auto-rotate
+      globe.controls().autoRotate = true;
+      globe.controls().autoRotateSpeed = 0.35;
+
+      // set beginning coordinates
+      globeEl.current.pointOfView({ lat:30,lng:10,altitude: 1.5 });
+
+    }, []);
+
+    const h = window.innerHeight;
+
+    return <Globe
+      ref={globeEl}
+      animateIn={false}
+      showAtmosphere={false}
+      height={h*0.7}
+      globeImageUrl="2023_anomaly_global.jpg"
+      bumpImageUrl="../images/earth-topology.png"
+      backgroundColor="#ffffff"
+    />;
+  };
+
+  ReactDOM.render(
+    <World />,
+    document.getElementById('globeViz')
+  );
+</script>
+</div>
+</body>
