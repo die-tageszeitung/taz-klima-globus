@@ -140,7 +140,6 @@
       fetch('ne_110_final_data_reduced.geojson').then(res => res.json()).then(setCountries);
     }, []);
   
-    const colorScale = d3.scaleSequentialSqrt(d3.interpolateRdYlBu).domain([4,-4]);
                 
     const h = window.innerHeight;
 
@@ -156,15 +155,10 @@
       lineHoverPrecision={0}
 
       polygonsData={countries.features}
-      polygonAltitude={d => d === hoverD ? 0.12 : 0.001}
-      polygonCapColor={d => d === hoverD ? colorScale(getVal(d)) : 'rgba(0,0,0,0)'}
-      polygonSideColor={() => 'rgba(0,0,0,0)'}
-      polygonStrokeColor={() => '#000'}
       polygonLabel={({ properties: d }) => `
         <b>${d.SOVEREIGNT}:</b> <br />
         Erderhitzung 2023: <i>${Math.round(d.mean * 10) / 10}</i>
       `}
-      onPolygonHover={setHoverD}
       polygonsTransitionDuration={300}
     />;
   };
