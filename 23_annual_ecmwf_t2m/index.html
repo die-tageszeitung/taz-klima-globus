@@ -86,15 +86,17 @@
   <script src="//tools-static.wmflabs.org/cdnjs/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="//tools-static.wmflabs.org/cdnjs/ajax/libs/babel-standalone/7.23.4/babel.js"></script>
 
+  <script src="//tools-static.wmflabs.org/cdnjs/ajax/libs/d3/7.8.5/d3.min.js"></script>
+
   <script src="//tools-static.wmflabs.org/cdnjs/ajax/libs/three.js/0.158.0/three"></script>
+  
 
   <script src="../js/react-globe.gl.min.js"></script>
-  <!--<script src="../../dist/react-globe.gl.js"></script>-->
 </head>
 
 <body>
   <div id="wrapper" align="left">
-    <h3 id="title">Wo auf der Welt war es im November besonders heiß?</h3>
+    <h3 id="title">Wo auf der Welt war es 2023 besonders heiß?</h3>
   </div>
 
   <div class='my-legend'>
@@ -113,7 +115,7 @@
 
 <div id="globeViz" align="center" style="height:100%">
 <script type="text/jsx">
-  const { useEffect, useRef } = React;
+  const { useState, useEffect, useRef, useMemo } = React;
 
   const World = () => {
     const globeEl = useRef();
@@ -130,6 +132,25 @@
 
     }, []);
 
+    const [countries, setCountries] = useState({ features: []});
+    const [hoverD, setHoverD] = useState();
+    
+    useEffect(() => {
+      // load data
+      fetch('ne_110_final_data_reduced.geojson').then(res => res.json()).then(setCountries);
+    }, []);
+
+    const colorScale = d3.scaleSequentialSqrt(d3.interpolateYlOrRd);
+
+    // GDP per capita (avoiding countries with small pop)
+    const getVal = feat => feat.properties.mean;
+
+    const maxVal = useMemo(
+      () => Math.max(...countries.features.map(getVal)),
+      [countries]
+    );
+    colorScale.domain([0, maxVal]);
+
     const h = window.innerHeight;
 
     return <Globe
@@ -140,6 +161,19 @@
       globeImageUrl="2023_anomaly_global.jpg"
       bumpImageUrl="../images/earth-topology.png"
       backgroundColor="#ffffff"
+      
+      lineHoverPrecision={0}
+
+      polygonsData={countries.features}
+      polygonAltitude={d => d === hoverD ? 0.12 : 0.06}
+      polygonSideColor={() => 'rgba(0, 100, 0, 0.15)'}
+      polygonStrokeColor={() => '#111'}
+      polygonLabel={({ properties: d }) => `
+        <b>${d.SOVEREIGNT}:</b> <br />
+        Erderhitzung 2023: <i>${d.mean}</i>
+      `}
+      onPolygonHover={setHoverD}
+      polygonsTransitionDuration={300}
     />;
   };
 
