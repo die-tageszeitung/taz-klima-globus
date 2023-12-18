@@ -140,10 +140,7 @@
       fetch('ne_110_final_data_reduced.geojson').then(res => res.json()).then(setCountries);
     }, []);
   
-    const colorScale = d3.scaleLinear()
-        .domain([-4,4])
-        .interpolate(d3.interpolateHcl)
-        .range([d3.hcl('#394dc3'), d3.hcl('#b50025');
+    const colorScale = d3.scaleSequentialSqrt(d3.interpolateRdYlBu).domain([4,-4]);
                 
     const h = window.innerHeight;
 
