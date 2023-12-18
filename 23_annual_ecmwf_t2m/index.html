@@ -161,7 +161,7 @@
       polygonStrokeColor={() => '#000'}
       polygonLabel={({ properties: d }) => `
         <b style="background:#FFFFFF;color:black; padding:1px 4px">${d.GERMAN_NAME}:</b> <br />
-        <p style="background:#FFFFFF;color:black; padding:1px 4px">Erderhitzung 2023: <i>${String(Math.round(d.mean * 10) / 10).replace('.',',')}°C</i></p>
+        <p style="background:#FFFFFF;color:black; padding:1px 4px">Erderhitzung 2023: <i>${(d.mean<0?"":"+") + String(Math.round(d.mean * 10) / 10).replace('.',',')}°C</i></p>
       `}
       onPolygonHover={setHoverD}
       polygonsTransitionDuration={300}
