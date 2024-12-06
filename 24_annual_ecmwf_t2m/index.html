@@ -31,10 +31,11 @@
 
     .overlay-box {
             border-width:3px;
-      border-style:solid;
-      border-color:#000000;
+      #border-style:solid;
+      border-radius: 25px;
+      #border-color:#000000;
       background-color:#FFFFFF;
-      opacity: 0.7;
+      #opacity: 0.7;
       line-height:1.2em;
       color:black;
       padding:1px 4px;
@@ -174,9 +175,9 @@
       polygonSideColor={() => 'rgba(0,0,0,0)'}
       polygonStrokeColor={() => '#000'}
       polygonLabel={({ properties: d }) => `
-        <div class='overlay-box'><b style="opacity:1">${d.GERMAN_NAME}</b><br>
-        <big style="opacity:1"><i>${(d.mean<0?"":"+") + String(Math.round(d.mean * 10) / 10).replace('.',',')}°C</i></big><br>
-        <small style="opacity:1">im Vergleich zum<br>Durchschnitt 1961-1990</small></div>
+        <div class='overlay-box'><b>${d.GERMAN_NAME}</b><br>
+        <big><i>${(d.mean<0?"":"+") + String(Math.round(d.mean * 10) / 10).replace('.',',')}°C</i></big><br>
+        <small>im Vergleich zum<br>Durchschnitt 1961-1990</small></div>
       `}
       onPolygonHover={setHoverD}
       polygonsTransitionDuration={300}
