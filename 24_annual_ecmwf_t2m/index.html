@@ -31,15 +31,26 @@
 
     .overlay-box {
             #border-width:3px;
-          border-top:3px solid #CCD3D3D3;
-    border-bottom:3px solid #CC808080;
-    border-left:3px solid #CCD3D3D3;
-    border-right:3px solid #CC808080;
+          border-top:3px solid #D3D3D3;
+    border-bottom:3px solid #808080;
+    border-left:3px solid #D3D3D3;
+    border-right:3px solid #808080;
       #border-style:solid;
       border-radius: 5px;
       #border-color:#000000;
-      background-color:#CCFFFFFF;
-      #opacity: 0.7;
+      background-color:#FFFFFF;
+      opacity: 0.7;
+      #line-height:1.2em;
+      #color:black;
+      #padding:1px 4px;
+      #font-family: AktivGrotesk_Rg, sans-serif;
+      #font-weight: normal;
+      # text-align: center;
+        }
+
+        .overlay-box .overlay-text {
+
+      opacity: 1;
       line-height:1.2em;
       color:black;
       padding:1px 4px;
@@ -179,9 +190,12 @@
       polygonSideColor={() => 'rgba(0,0,0,0)'}
       polygonStrokeColor={() => '#000'}
       polygonLabel={({ properties: d }) => `
-        <div class='overlay-box'><b>${d.GERMAN_NAME}</b><br>
-        <big><i>${(d.mean<0?"":"+") + String(Math.round(d.mean * 10) / 10).replace('.',',')}°C</i></big><br>
-        <small>im Vergleich zum<br>Durchschnitt 1961-1990</small></div>
+        <div class='overlay-box'>
+          <div class='overlay-text'><b>${d.GERMAN_NAME}</b><br>
+            <big><i>${(d.mean<0?"":"+") + String(Math.round(d.mean * 10) / 10).replace('.',',')}°C</i></big><br>
+            <small>im Vergleich zum<br>Durchschnitt 1961-1990</small>
+          </div>
+        </div>
       `}
       onPolygonHover={setHoverD}
       polygonsTransitionDuration={300}
