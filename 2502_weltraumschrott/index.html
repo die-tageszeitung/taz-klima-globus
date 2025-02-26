@@ -53,7 +53,7 @@
 
     useEffect(() => {
       // load satellite data
-      fetch('250226_full-catalog-spacetrack_only_debakmpkm.txt').then(r => r.text()).then(rawData => {
+      fetch('250226_full-catalog-spacetrack_only_debakmpkmrb.txt').then(r => r.text()).then(rawData => {
         const tleData = rawData.replace(/\r/g, '')
           .split(/\n(?=[^12])/)
           .filter(d => d)
