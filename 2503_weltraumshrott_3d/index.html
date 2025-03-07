@@ -32,7 +32,7 @@
     
     const world = new Globe(document.getElementById('chart'))
       .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
-      .customLayerData(gData)
+      .customLayerData(satData)
       .customThreeObject(d => new THREE.Mesh(
         new THREE.SphereGeometry(d.radius),
         new THREE.MeshLambertMaterial({ color: 'white' })
