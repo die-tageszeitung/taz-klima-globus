@@ -35,10 +35,10 @@
     const world = new Globe(document.getElementById('chart'))
       .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
       .particleLat('lat')
-      .objectLng('lng')
-      .objectAltitude('alt')
-      .objectsColor(() => 'white')
-      .objectsSize(3)
+      .particleLng('lng')
+      .particleAltitude('alt')
+      .particlesColor(() => 'white')
+      .particlesSize(3)
       .particlesSizeAttenuation('false');
 
     new THREE.TextureLoader().load('stadot.png', texture => {
