@@ -69,7 +69,7 @@
       });
     }, []);
 
-    const objectsData = useMemo(() => {
+    const particlesData = useMemo(() => {
       if (!satData) return [];
 
       // Update satellite positions
@@ -82,11 +82,7 @@
             const lat = satellite.radiansToDegrees(gdPos.latitude);
             const lng = satellite.radiansToDegrees(gdPos.longitude);
             const alt = gdPos.height / EARTH_RADIUS_KM;
-            return { ...d,
-                    lat,
-                    lng,
-                    alt,
-                    size: 0.9 };
+            return { ...d, lat, lng, alt };
           }
           return d;
         }).filter(d => !isNaN(d.lat) && !isNaN(d.lng) && !isNaN(d.alt))
@@ -102,13 +98,12 @@
       <Globe
         ref={globeEl}
         globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
-        objectsData={objectsData}
-        objectsLabel="name"
-        objectsLat="lat"
-        objectsLng="lng"
-        objectsAltitude="alt"
-        objectsColor={useCallback(() => 'white', [])}
-        objectSize="size"
+        particlesData={particlesData}
+        particleLabel="name"
+        particleLat="lat"
+        particleLng="lng"
+        particleAltitude="alt"
+        particlesColor={useCallback(() => 'white', [])}
       />
       <div id="time-log">{time.toString()}</div>
     </div>;
