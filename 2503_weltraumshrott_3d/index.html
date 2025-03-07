@@ -1,105 +1,81 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Earth Satellites Tracker</title>
+  <style>
+    body { margin: 0; }
 
-    <!-- Styles -->
-    <style>
-        body { margin: 0; overflow: hidden; }
-        #time-log {
-            position: absolute;
-            font-size: 12px;
-            font-family: sans-serif;
-            padding: 5px;
-            border-radius: 3px;
-            background-color: rgba(200, 200, 200, 0.1);
-            color: lavender;
-            bottom: 10px;
-            right: 10px;
-        }
-    </style>
+    #time-log {
+      position: absolute;
+      font-size: 12px;
+      font-family: sans-serif;
+      padding: 5px;
+      border-radius: 3px;
+      background-color: rgba(200, 200, 200, 0.1);
+      color: lavender;
+      bottom: 10px;
+      right: 10px;
+    }
+  </style>
 
-    <!-- External Libraries -->
-    <script src="//unpkg.com/globe.gl"></script>
+  <script src="//unpkg.com/globe.gl"></script>
+<!--  <script src="../../dist/globe.gl.js"></script>-->
 </head>
 
 <body>
-    <div id="globe-container"></div>
-    <div id="time-log"></div>
+  <div id="chart"></div>
+  <div id="time-log"></div>
 
-    <script type="module">
-        import * as THREE from 'https://esm.sh/three';
-        import * as satellite from 'https://esm.sh/satellite.js';
-        
-        // Constants
-        const EARTH_RADIUS_KM = 6371; 
-        const SAT_SIZE = 80; // Scaled satellite size
-        const TIME_STEP = 3000; // Time step in milliseconds
+  <script type="module">
+    import * as satellite from 'https://esm.sh/satellite.js';
 
-        // Initialize Globe
-        const world = Globe()
-            .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
-            .showGraticules(true)
-            .objectsData([])
-            .objectLabel(d => `${d.name}`)
-            .objectLat(d => d.lat)
-            .objectLng(d => d.lng)
-            .objectAltitude(d => d.alt)
-            .objectThreeObject(createSatellite);
+    const EARTH_RADIUS_KM = 6371; // km
+    const TIME_STEP = 3 * 1000; // per frame
 
-        document.getElementById("globe-container").appendChild(world());
+    
+    const world = new Globe(document.getElementById('chart'))
+      .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+      .customLayerData(gData)
+      .customThreeObject(d => new THREE.Mesh(
+        new THREE.SphereGeometry(d.radius),
+        new THREE.MeshLambertMaterial({ color: 'white' })
+      ))
+      .customThreeObjectUpdate((obj, d) => {
+        Object.assign(obj.position, world.getCoords(d.lat, d.lng, d.alt));
+      });
 
-        // Satellite Object Function
-        function createSatellite() {
-            const geometry = new THREE.SphereGeometry(1, 16, 8);
-            const material = new THREE.MeshLambertMaterial({ color: 'red', transparent: true, opacity: 0.8 });
-            const mesh = new THREE.Mesh(geometry, material);
-            mesh.scale.set(0.005, 0.005, 0.005); // Adjust satellite size
-            return mesh;
-        }
+    setTimeout(() => world.pointOfView({ altitude: 3.5 }));
 
-        // Load Satellite Data
-        fetch('250226_full-catalog-spacetrack_only_debakmpkmrb.txt')
-            .then(response => response.text())
-            .then(processSatelliteData);
+    fetch('250226_full-catalog-spacetrack_only_debakmpkmrb.txt').then(r => r.text()).then(rawData => {
+      const tleData = rawData.replace(/\r/g, '')
+        .split(/\n(?=[^12])/)
+        .filter(d => d)
+        .map(tle => tle.split('\n'));
+      const satData = tleData.map(([name, ...tle]) => ({
+        satrec: satellite.twoline2satrec(...tle),
+        name: name.trim().replace(/^0 /, '')
+      }))
+      // exclude those that can't be propagated
+      .filter(d => !!satellite.propagate(d.satrec, new Date()).position);
 
-        function processSatelliteData(rawData) {
-            const tleData = rawData.trim().split(/\n(?=[^12])/).map(tle => tle.split('\n'));
-            let satellites = tleData.map(([name, ...tle]) => ({
-                satrec: satellite.twoline2satrec(...tle),
-                name: name.trim().replace(/^0 /, '')
-            })).filter(d => !!satellite.propagate(d.satrec, new Date()).position);
+      // time ticker
+      let time = new Date();
+      (function frameTicker() {
+        requestAnimationFrame(frameTicker);
 
-            updateSatellites(satellites);
-        }
+        time = new Date(+time + TIME_STEP);
 
-        // Update Satellite Positions
-        function updateSatellites(satData) {
-            function update() {
-                const time = new Date(Date.now() + TIME_STEP);
-                const gmst = satellite.gstime(time);
+        // Update satellite positions
+        const gmst = satellite.gstime(time);
+        satData.forEach(d => {
+          const eci = satellite.propagate(d.satrec, time);
+          if (eci.position) {
+            const gdPos = satellite.eciToGeodetic(eci.position, gmst);
+            d.lat = satellite.radiansToDegrees(gdPos.latitude);
+            d.lng = satellite.radiansToDegrees(gdPos.longitude);
+            d.alt = gdPos.height / EARTH_RADIUS_KM
+          }
+        });
 
-                const newSatData = satData.map(d => {
-                    const position = satellite.propagate(d.satrec, time).position;
-                    if (!position) return null;
-                    const geo = satellite.eciToGeodetic(position, gmst);
-                    return {
-                        ...d,
-                        lat: satellite.radiansToDegrees(geo.latitude),
-                        lng: satellite.radiansToDegrees(geo.longitude),
-                        alt: geo.height / EARTH_RADIUS_KM
-                    };
-                }).filter(Boolean);
-
-                world.objectsData(newSatData);
-                document.getElementById("time-log").innerText = time.toString();
-                requestAnimationFrame(update);
-            }
-
-            update();
-        }
-    </script>
+        world.particlesData([satData.filter(d => !isNaN(d.lat) && !isNaN(d.lng) && !isNaN(d.alt))]);
+      })();
+    });
+  </script>
 </body>
-</html>
