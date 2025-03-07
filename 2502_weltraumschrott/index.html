@@ -82,7 +82,7 @@
             const lat = satellite.radiansToDegrees(gdPos.latitude);
             const lng = satellite.radiansToDegrees(gdPos.longitude);
             const alt = gdPos.height / EARTH_RADIUS_KM;
-            return { ...d, lat, lng, alt };
+            return { ...d, lat, lng, alt, size: 5 };
           }
           return d;
         }).filter(d => !isNaN(d.lat) && !isNaN(d.lng) && !isNaN(d.alt))
