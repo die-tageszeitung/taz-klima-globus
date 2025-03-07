@@ -37,7 +37,8 @@
       .particleLng('lng')
       .particleAltitude('alt')
       .particlesColor(() => 'white')
-      .particlesSize(3);
+      .particlesSize(3)
+      .particlesSizeAttenuation('false');
 
     setTimeout(() => world.pointOfView({ altitude: 3.5 }));
 
