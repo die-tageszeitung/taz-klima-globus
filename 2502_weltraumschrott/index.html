@@ -34,11 +34,12 @@
     const world = new Globe(document.getElementById('chart'))
       .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
       .particleLat('lat')
-      .particleLng('lng')
-      .particleAltitude('alt')
-      .particlesColor(() => 'white')
-      .particlesSize(3)
-      .particlesSizeAttenuation('false');
+      .objectLng('lng')
+      .objectAltitude('alt')
+      .objectsColor(() => 'white')
+      .objectsSize(3)
+      .particlesSizeAttenuation('false')
+      .particlesTexture('stadot.png');
 
     setTimeout(() => world.pointOfView({ altitude: 3.5 }));
 
