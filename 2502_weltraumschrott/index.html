@@ -32,11 +32,9 @@
     
     const world = new Globe(document.getElementById('chart'))
       .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
-      .particleLat('lat')
-      .particleLng('lng')
-      .particleAltitude('alt')
-      .particlesSize(1.5)
-      .particlesSizeAttenuation('false');
+      .objectLat('lat')
+      .objectLng('lng')
+      .objectAltitude('alt');
 
     setTimeout(() => world.pointOfView({ altitude: 3.5 }));
 
@@ -71,7 +69,7 @@
           }
         });
 
-        world.particlesData([satData.filter(d => !isNaN(d.lat) && !isNaN(d.lng) && !isNaN(d.alt))]);
+        world.objectsData([satData.filter(d => !isNaN(d.lat) && !isNaN(d.lng) && !isNaN(d.alt))]);
       })();
     });
   </script>
