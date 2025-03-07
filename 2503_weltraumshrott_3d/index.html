@@ -22,9 +22,7 @@
     </style>
 
     <!-- External Libraries -->
-    <script src="//unpkg.com/three"></script>
     <script src="//unpkg.com/globe.gl"></script>
-    <script src="//unpkg.com/satellite.js"></script>
 </head>
 
 <body>
@@ -32,6 +30,9 @@
     <div id="time-log"></div>
 
     <script>
+        import * as THREE from 'https://esm.sh/three';
+        import * as satellite from 'https://esm.sh/satellite.js';
+        
         // Constants
         const EARTH_RADIUS_KM = 6371; 
         const SAT_SIZE = 80; // Scaled satellite size
