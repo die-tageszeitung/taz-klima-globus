@@ -1,1 +1,104 @@
-empty
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earth Satellites Tracker</title>
+
+    <!-- Styles -->
+    <style>
+        body { margin: 0; overflow: hidden; }
+        #time-log {
+            position: absolute;
+            font-size: 12px;
+            font-family: sans-serif;
+            padding: 5px;
+            border-radius: 3px;
+            background-color: rgba(200, 200, 200, 0.1);
+            color: lavender;
+            bottom: 10px;
+            right: 10px;
+        }
+    </style>
+
+    <!-- External Libraries -->
+    <script src="//unpkg.com/three"></script>
+    <script src="//unpkg.com/globe.gl"></script>
+    <script src="//unpkg.com/satellite.js"></script>
+</head>
+
+<body>
+    <div id="globe-container"></div>
+    <div id="time-log"></div>
+
+    <script>
+        // Constants
+        const EARTH_RADIUS_KM = 6371; 
+        const SAT_SIZE = 80; // Scaled satellite size
+        const TIME_STEP = 3000; // Time step in milliseconds
+
+        // Initialize Globe
+        const world = Globe()
+            .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+            .showGraticules(true)
+            .objectsData([])
+            .objectLabel(d => `${d.name}`)
+            .objectLat(d => d.lat)
+            .objectLng(d => d.lng)
+            .objectAltitude(d => d.alt)
+            .objectThreeObject(createSatellite);
+
+        document.getElementById("globe-container").appendChild(world());
+
+        // Satellite Object Function
+        function createSatellite() {
+            const geometry = new THREE.SphereGeometry(1, 16, 8);
+            const material = new THREE.MeshLambertMaterial({ color: 'red', transparent: true, opacity: 0.8 });
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.scale.set(0.005, 0.005, 0.005); // Adjust satellite size
+            return mesh;
+        }
+
+        // Load Satellite Data
+        fetch('//unpkg.com/globe.gl/example/datasets/space-track-leo.txt')
+            .then(response => response.text())
+            .then(processSatelliteData);
+
+        function processSatelliteData(rawData) {
+            const tleData = rawData.trim().split(/\n(?=[^12])/).map(tle => tle.split('\n'));
+            let satellites = tleData.map(([name, ...tle]) => ({
+                satrec: satellite.twoline2satrec(...tle),
+                name: name.trim().replace(/^0 /, '')
+            })).filter(d => !!satellite.propagate(d.satrec, new Date()).position);
+
+            updateSatellites(satellites);
+        }
+
+        // Update Satellite Positions
+        function updateSatellites(satData) {
+            function update() {
+                const time = new Date(Date.now() + TIME_STEP);
+                const gmst = satellite.gstime(time);
+
+                const newSatData = satData.map(d => {
+                    const position = satellite.propagate(d.satrec, time).position;
+                    if (!position) return null;
+                    const geo = satellite.eciToGeodetic(position, gmst);
+                    return {
+                        ...d,
+                        lat: satellite.radiansToDegrees(geo.latitude),
+                        lng: satellite.radiansToDegrees(geo.longitude),
+                        alt: geo.height / EARTH_RADIUS_KM
+                    };
+                }).filter(Boolean);
+
+                world.objectsData(newSatData);
+                document.getElementById("time-log").innerText = time.toString();
+                requestAnimationFrame(update);
+            }
+
+            update();
+        }
+    </script>
+</body>
+</html>
