@@ -69,7 +69,7 @@
       });
     }, []);
 
-    const objectssData = useMemo(() => {
+    const objectsData = useMemo(() => {
       if (!satData) return [];
 
       // Update satellite positions
@@ -102,13 +102,13 @@
       <Globe
         ref={globeEl}
         globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
-        objectssData={objectssData}
+        objectsData={objectsData}
         objectsLabel="name"
         objectsLat="lat"
         objectsLng="lng"
         objectsAltitude="alt"
-        objectssColor={useCallback(() => 'white', [])}
-        objectsSize="size"
+        objectsColor={useCallback(() => 'white', [])}
+        objectSize="size"
       />
       <div id="time-log">{time.toString()}</div>
     </div>;
