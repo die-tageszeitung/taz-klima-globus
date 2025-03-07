@@ -37,12 +37,8 @@
       .particleLng('lng')
       .particleAltitude('alt')
       .particlesColor(() => 'white')
-      .particlesSize(3);
-    
-    new THREE.TextureLoader().load('stadot.png', texture => {
-      texture.colorSpace = THREE.SRGBColorSpace;
-      Globe.particlesTexture(texture);
-    });
+      .particlesSize(3)
+      .particlesTexture('stadot.png');
 
     setTimeout(() => world.pointOfView({ altitude: 3.5 }));
 
