@@ -1,0 +1,111 @@
+<head>
+  <style>
+    body { margin: 0; }
+
+    #time-log {
+      position: absolute;
+      font-size: 12px;
+      font-family: sans-serif;
+      padding: 5px;
+      border-radius: 3px;
+      background-color: rgba(200, 200, 200, 0.1);
+      color: lavender;
+      bottom: 10px;
+      right: 10px;
+    }
+  </style>
+
+  <script src="//unpkg.com/globe.gl"></script>
+<!--  <script src="../../dist/globe.gl.js"></script>-->
+</head>
+
+<body>
+  <div id="chart"></div>
+  <div id="time-log"></div>
+
+  <script type="module">
+    import * as satellite from 'https://esm.sh/satellite.js';
+
+    const EARTH_RADIUS_KM = 6371; // km
+    const TIME_STEP = 3 * 1000; // per frame
+
+    
+    const world = Globe()
+        .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+        .showGraticules(true)
+        .objectLabel(d => `${d.name} (${d.group})`)
+        .objectLat(d => d.position && d.position.lat)
+        .objectLng(d => d.position && d.position.lng)
+        .objectAltitude(d => d.position && d.position.altitude);
+
+    setTimeout(() => {
+      // set globe rotation speed
+      world.controls().autoRotate = true;
+      world.controls().autoRotateSpeed = velocity / 24; // mins/orbit (at 60fps)
+    });
+
+    const satObjScale = satSize * world.getGlobeRadius() / EARTH_RADIUS / 2
+    const satGeometry = new THREE.SphereGeometry(1, 16, 8);
+    
+    const groupMaterials = {};
+    world.objectThreeObject(d => {
+      if (!groupMaterials.hasOwnProperty(d.group)) {
+        // cache materials
+        groupMaterials[d.group] = new THREE.MeshLambertMaterial({
+          color: groupColor(d.group),
+          transparent: true,
+          opacity: 0.7
+        });
+      };
+      const obj = new THREE.Mesh(satGeometry, groupMaterials[d.group]);
+      obj.scale.set(satObjScale, satObjScale, satObjScale);
+      return obj;
+    });
+  
+    // Size existing satellites
+    world.objectsData().forEach(d => d.__threeObj && d.__threeObj.scale.set(satObjScale, satObjScale, satObjScale));
+
+    const groupColor = d3.scaleOrdinal(d3.schemeCategory10);
+
+    let time = new Date();
+
+    while (true) {
+      mutable time = new Date(+time + velocity * 1000);
+      yield;
+      };
+
+    const height = CANVAS_HEIGHT;
+    world.width(width).height(height);
+    return { width, height };
+
+    // Update satellite position data
+    const gmst = satellite.gstime(time);
+    satData.forEach(d => {
+      const eciPos = satellite.propagate(d.satrec, time).position;
+      if (eciPos) {
+        const gdPos = satellite.eciToGeodetic(eciPos, gmst);
+        d.position = {
+          lat: satellite.radiansToDegrees(gdPos.latitude), // deg
+          lng: satellite.radiansToDegrees(gdPos.longitude), // deg
+          altitude: gdPos.height / EARTH_RADIUS // globe radius units
+        }
+      }
+    });
+    world.objectsData(satData);
+
+    fetch('250226_full-catalog-spacetrack_only_debakmpkmrb.txt').then(r => r.text()).then(rawData => {
+      const tleData = rawData.replace(/\r/g, '')
+        .split(/\n(?=[^12])/)
+        .filter(d => d)
+        .map(tle => tle.split('\n'));
+      const satData = tleData.map(([name, ...tle]) => ({
+        satrec: satellite.twoline2satrec(...tle),
+        name: name.trim().replace(/^0 /, '')
+      }))
+      // exclude those that can't be propagated
+      .filter(d => !!satellite.propagate(d.satrec, new Date()).position);
+
+      })();
+    });
+  </script>
+</body>
