@@ -32,8 +32,11 @@
 
     const timeLogger = document.getElementById('time-log');
 
-    const texture = new THREE.TextureLoader().load( "stadot.png" );
-
+    new THREE.TextureLoader().load('./sat-icon.png', texture => {
+      texture.colorSpace = THREE.SRGBColorSpace;
+      Globe.particlesTexture(texture);
+    });
+    
     const world = new Globe(document.getElementById('chart'))
       .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
       .particleLat('lat')
@@ -41,8 +44,7 @@
       .objectAltitude('alt')
       .objectsColor(() => 'white')
       .objectsSize(3)
-      .particlesSizeAttenuation('false')
-      .particlesTexture('texture');
+      .particlesSizeAttenuation('false');
 
     setTimeout(() => world.pointOfView({ altitude: 3.5 }));
 
