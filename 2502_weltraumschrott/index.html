@@ -118,12 +118,7 @@
       // exclude those that can't be propagated
       .filter(d => !!satellite.propagate(d.satrec, new Date()).position);
 
-      // time ticker
-      let time = new Date();
-      (function frameTicker() {
-        requestAnimationFrame(frameTicker);
 
-        time = new Date(+time + TIME_STEP);
 
         // Update satellite positions
         const gmst = satellite.gstime(time);
