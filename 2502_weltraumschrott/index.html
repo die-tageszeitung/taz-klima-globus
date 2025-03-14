@@ -120,7 +120,8 @@
 
       // time ticker
       let time = new Date();
-
+      (function frameTicker() {
+        requestAnimationFrame(frameTicker);
 
         time = new Date(+time + TIME_STEP);
 
