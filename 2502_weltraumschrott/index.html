@@ -1,18 +1,69 @@
+<!DOCTYPE html>
+<html lang="de-DE">
+
 <head>
   <style>
-    body { margin: 0; }
-
-    #time-log {
-      position: absolute;
-      font-size: 12px;
-      font-family: sans-serif;
-      padding: 5px;
-      border-radius: 3px;
-      background-color: rgba(200, 200, 200, 0.1);
-      color: lavender;
-      bottom: 10px;
-      right: 10px;
+    
+    body {
+      padding: 0;
+      margin: 0;
     }
+
+    @font-face {
+            font-family: 'AktivGroteskBold';
+            src: url('https://taz.de/lib/share/fonts/AktivGroteskBold/AktivGrotesk_W_Bd.woff2') format('woff');
+            font-weight: bold;
+            font-style: bold;
+        }
+
+    h3 {
+            font-size: 20px;
+            margin: 5px;
+            font-weight: bold;
+        }
+
+      .my-legend .legend-title {
+      text-align: left;
+      margin-left: 5px;
+      margin-bottom: 3px
+      font-weight: normal;
+      font-size: 80%;
+      }
+    .my-legend .legend-scale ul {
+      margin: 5px;
+      padding: 0;
+      float: left;
+      list-style: none;
+      }
+    .my-legend .legend-scale ul li {
+      display: block;
+      float: left;
+      width: 20px;
+      padding-left: 1px;
+      padding-right: 1px;
+      margin-bottom: 3px;  
+      text-align: center;
+      font-size: 65%;
+      list-style: none;
+      }
+    .my-legend .legend-scale ul li + li {border-left: 1px solid #000; }
+
+    .my-legend ul.legend-labels li span {
+      display: block;
+      float: left;
+      height: 10px;
+      width: 20px;
+      }
+    .my-legend .legend-source {
+      font-size: 55%;
+      margin-left: 5px;
+      color: #999;
+      clear: both;
+      }
+    .my-legend a {
+      color: #777;
+      }
+  
   </style>
 
   <script src="//unpkg.com/globe.gl"></script>
@@ -20,6 +71,13 @@
 </head>
 
 <body>
+  <div id="wrapper" align="left">
+    <h3 id="title">So viel Weltraumschrott umkreist die Erde</h3>
+  </div>
+  <div class='my-legend'>
+  <div class='legend-title'>Jeder grüne Punkt zeigt ein unbrauchbares, im Weltraum schwebendes Objekt, unabhängig von seiner Größe. Die Bewegungen basieren auf den tatsächlichen Umlaufbahnen im Februar 2025.</div>
+  </div>
+  
   <div id="chart"></div>
   <div id="time-log"></div>
 
@@ -36,7 +94,8 @@
       .particleLng('lng')
       .particleAltitude('alt')
       .particlesSize(1.5)
-      .particlesSizeAttenuation('false');
+      .particlesSizeAttenuation('false')
+      .particlesColor={useCallback(() => 'palegreen', [])};
 
     setTimeout(() => world.pointOfView({ altitude: 3.5 }));
 
@@ -75,4 +134,7 @@
       })();
     });
   </script>
+  <div class='my-legend'>
+  <div class='legend-source'>Quelle: <a href="https://www.space-track.org" target="_blank">US Space Force/Space Delta 2</a></div>
+  </div>
 </body>
