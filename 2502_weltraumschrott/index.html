@@ -116,9 +116,8 @@
       .particleLng('lng')
       .particleAltitude('alt')
       .particlesSize(1.5)
-      .particlesSizeAttenuation('false')
-      .particlesColor={useCallback(() => 'palegreen', [])};
-
+      .particlesSizeAttenuation('false');
+    
     setTimeout(() => world.pointOfView({ altitude: 3.5 }));
 
     fetch('250226_full-catalog-spacetrack_only_debakmpkmrb.txt').then(r => r.text()).then(rawData => {
