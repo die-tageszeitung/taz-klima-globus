@@ -43,6 +43,17 @@
     const weightColor = scaleSequentialSqrt(interpolateYlOrRd)
       .domain([0, 6031]);
 
+    const [countries, setCountries] = useState({ features: []});
+    const [hoverD, setHoverD] = useState();
+    
+    useEffect(() => {
+      // load data
+      fetch('ne_110_final_data_reduced.geojson').then(res => res.json()).then(setCountries);
+    }, []);
+  
+                
+    const h = window.innerHeight;
+
     return <Globe
       ref={globeEl}
       globeImageUrl="//cdn.jsdelivr.net/npm/three-globe/example/img/earth-night.jpg"
@@ -57,6 +68,24 @@
       hexSideColor={d => weightColor(d.sumWeight)}
       hexBinMerge={true}
       enablePointerInteraction={false}
+
+      lineHoverPrecision={0}
+
+      polygonsData={countries.features}
+      polygonAltitude={() => 0.001}
+      polygonCapColor={() => 'rgba(0,0,0,0)'}
+      polygonSideColor={() => 'rgba(0,0,0,0)'}
+      polygonStrokeColor={() => '#000'}
+      polygonLabel={({ properties: d }) => `
+        <div class='overlay-box'>
+          <div class='overlay-text'><b>${d.GERMAN_NAME}</b><br>
+            <big><i>${(d.mean<0?"":"+") + String(Math.round(d.mean * 10) / 10).replace('.',',')}°C</i></big><br>
+            <small>im Vergleich zum<br>Durchschnitt 1961-1990</small>
+          </div>
+        </div>
+      `}
+      onPolygonHover={setHoverD}
+      polygonsTransitionDuration={300}
     />;
   };
 
