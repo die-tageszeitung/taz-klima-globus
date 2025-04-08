@@ -33,13 +33,6 @@
         .then(setPopData);
     }, []);
 
-    useEffect(() => {
-      // Auto-rotate
-      globeEl.current.controls().autoRotate = true;
-      globeEl.current.controls().autoRotateSpeed = 0.35;
-      globeEl.current.pointOfView({ lat:30,lng:10,altitude: 1.5 });
-    }, []);
-
     const weightColor = scaleSequentialSqrt(interpolateYlOrRd)
       .domain([0, 6031]);
 
