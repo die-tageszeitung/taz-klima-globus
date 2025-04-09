@@ -175,7 +175,7 @@
 
       hexBinPointsData={popData}
       hexBinPointWeight="pop"
-      hexAltitude={0}
+      hexAltitude={d => d.sumWeight * 3e-5}
       hexBinResolution={4}
       hexTopColor={d => weightColor(d.sumWeight)}
       hexSideColor={d => weightColor(d.sumWeight)}
