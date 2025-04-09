@@ -119,7 +119,19 @@
 </head>
 
 <body>
-
+  <div class='my-legend'>
+  <div class='legend-title'>Solarkapazität in Gigawatt</div>
+  <div class='legend-scale'>
+    <ul class='legend-labels'>
+      <li><span style='background:#ffffb2;'></span>0</li>
+      <li><span style='background:#fecc5c;'></span></li>
+      <li><span style='background:#fd8d3c;'></span>3</li>
+      <li><span style='background:#f03b20;'></span></li>
+      <li><span style='background:#bd0026;'></span>6</li>
+    </ul>
+  </div>
+  <div class='legend-source'>Quelle: <a href="https://www.transitionzero.org/insights/solar-asset-mapper-q4-2024-tz-sam" target="_blank">TransitionZero 2025</a></div>
+  </div>
 
 
 <div id="globeViz"></div>
@@ -176,17 +188,5 @@
   createRoot(document.getElementById('globeViz'))
     .render(<World />);
 </script>
-  <div class='my-legend'>
-  <div class='legend-title'>Solarkapazität in Gigawatt</div>
-  <div class='legend-scale'>
-    <ul class='legend-labels'>
-      <li><span style='background:#ffffb2;'></span>0</li>
-      <li><span style='background:#fecc5c;'></span></li>
-      <li><span style='background:#fd8d3c;'></span>3</li>
-      <li><span style='background:#f03b20;'></span></li>
-      <li><span style='background:#bd0026;'></span>6</li>
-    </ul>
-  </div>
-  <div class='legend-source'>Quelle: <a href="https://www.transitionzero.org/insights/solar-asset-mapper-q4-2024-tz-sam" target="_blank">TransitionZero 2025</a></div>
-  </div>
+
 </body>
