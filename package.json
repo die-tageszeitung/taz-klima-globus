@@ -12,6 +12,12 @@
   "workspaces": [
     "visualizations/*"
   ],
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-globe.gl": "^2.37.0",
+    "three": "^0.170.0"
+  },
   "keywords": ["globe", "climate", "visualization", "react"],
   "author": "die tageszeitung",
   "license": "ISC"
