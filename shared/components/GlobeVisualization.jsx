@@ -27,6 +27,35 @@ const GlobeVisualization = ({
 
     // Set beginning coordinates
     globe.pointOfView(initialViewPoint);
+
+    // Pause auto-rotation when tab is hidden
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        globe.controls().autoRotate = false;
+      } else {
+        globe.controls().autoRotate = true;
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // Cleanup
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [autoRotateSpeed, initialViewPoint]);
+
+  useEffect(() => {
+    if (!globeEl.current) return;
+
+    const globe = globeEl.current;
+
+    // Auto-rotate
+    globe.controls().autoRotate = true;
+    globe.controls().autoRotateSpeed = autoRotateSpeed;
+
+    // Set beginning coordinates
+    globe.pointOfView(initialViewPoint);
   }, [autoRotateSpeed, initialViewPoint]);
 
   useEffect(() => {
@@ -90,26 +119,18 @@ const GlobeVisualization = ({
         backgroundColor="#ffffff"
         lineHoverPrecision={0}
         polygonsData={countries.features || []}
-        polygonAltitude={0.01}
+        polygonAltitude={0.001}
         polygonCapColor={() => 'rgba(0,0,0,0)'}
         polygonSideColor={() => 'rgba(0,0,0,0)'}
         polygonStrokeColor={() => '#000'}
-        polygonLabel={({ properties: d }) => {
-          const value = d?.[valuePropertyName];
-          const name = d?.[geojsonPropertyName];
-
-          if (value === undefined || name === undefined) return '';
-
-          return `
-            <div class='overlay-box'>
-              <div class='overlay-text'>
-                <b>${name}</b><br>
-                <big><i>${(value < 0 ? "" : "+") + String(Math.round(value * 10) / 10).replace('.', ',')}°C</i></big><br>
-                <small>im Vergleich zum<br>Durchschnitt 1961-1990</small>
-              </div>
-            </div>
-          `;
-        }}
+        polygonLabel={({ properties: d }) => `
+        <div class='overlay-box'>
+          <div class='overlay-text'><b>${d.GERMAN_NAME}</b><br>
+            <big><i>${(d.mean<0?"":"+") + String(Math.round(d.mean * 10) / 10).replace('.',',')}°C</i></big><br>
+            <small>im Vergleich zum<br>Durchschnitt 1961-1990</small>
+          </div>
+        </div>
+      `}
         polygonsTransitionDuration={300}
       />
     </>
