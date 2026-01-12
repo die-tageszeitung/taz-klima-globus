@@ -1,0 +1,18 @@
+{
+  "name": "taz-klima-globus",
+  "version": "2.0.0",
+  "description": "Interactive globe visualizations for taz.de climate data",
+  "type": "module",
+  "scripts": {
+    "dev": "npm run dev --workspace=24_annual_ecmwf_t2m",
+    "build": "npm run build --workspaces --if-present",
+    "build:24": "npm run build --workspace=24_annual_ecmwf_t2m",
+    "preview": "npm run preview --workspace=24_annual_ecmwf_t2m"
+  },
+  "workspaces": [
+    "visualizations/*"
+  ],
+  "keywords": ["globe", "climate", "visualization", "react"],
+  "author": "die tageszeitung",
+  "license": "ISC"
+}

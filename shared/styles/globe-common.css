@@ -1,0 +1,104 @@
+/* Shared styles for all globe visualizations */
+
+@font-face {
+  font-family: 'KnileSemiBold';
+  src: url('https://taz.de/lib/taz-verlag-node/fonts/Knile-SemiBold.woff2') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'AktivGrotesk_Rg';
+  src: url("https://taz.de/lib/taz-verlag-node/fonts/AktivGrotesk_W_Rg.woff2") format("woff2"),
+       url("https://taz.de/lib/taz-verlag-node/fonts/AktivGrotesk_W_Rg.woff") format("woff");
+  font-display: swap;
+}
+
+html {
+  height: 100%;
+  background: #ffffff;
+  font-family: KnileSemiBold, serif;
+}
+
+body {
+  color: #000000;
+  padding: 0;
+  margin: 0;
+}
+
+.overlay-box {
+  border-width: 1px;
+  border-radius: 5px;
+  border-color: #D3D3D3;
+  background-color: #FFFFFF;
+  opacity: 0.9;
+}
+
+.overlay-box .overlay-text {
+  opacity: 1;
+  line-height: 1.2em;
+  color: black;
+  padding: 1px 4px;
+  font-family: AktivGrotesk_Rg, sans-serif;
+  font-weight: normal;
+  text-align: center;
+}
+
+h3 {
+  font-size: 22px;
+  margin: 5px;
+  font-weight: bold;
+}
+
+.my-legend .legend-title {
+  text-align: left;
+  margin-left: 5px;
+  margin-bottom: 3px;
+  font-family: AktivGrotesk_Rg, sans-serif;
+  font-weight: normal;
+  font-size: 80%;
+}
+
+.my-legend .legend-scale ul {
+  margin: 5px;
+  padding: 0;
+  float: left;
+  list-style: none;
+}
+
+.my-legend .legend-scale ul li {
+  display: block;
+  float: left;
+  width: 20px;
+  padding-left: 1px;
+  padding-right: 1px;
+  margin-bottom: 3px;
+  font-family: AktivGrotesk_Rg, sans-serif;
+  text-align: center;
+  font-size: 65%;
+  list-style: none;
+}
+
+.my-legend .legend-scale ul li + li {
+  border-left: 1px solid #000;
+}
+
+.my-legend ul.legend-labels li span {
+  display: block;
+  float: left;
+  height: 10px;
+  width: 20px;
+}
+
+.my-legend .legend-source {
+  font-family: AktivGrotesk_Rg, sans-serif;
+  font-size: 55%;
+  margin-left: 5px;
+  color: #999;
+  clear: both;
+}
+
+.my-legend a {
+  color: #777;
+}
