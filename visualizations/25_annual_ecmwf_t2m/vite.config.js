@@ -8,8 +8,8 @@ const __dirname = path.dirname(__filename);
 
 export default defineConfig({
   plugins: [react()],
-  // base: '/taz-klima-globus/visualizations/25_annual_ecmwf_t2m/dist/', // Keep commented for now
-  publicDir: 'public', // This tells Vite to copy public/ to dist/
+  base: './', // Use relative paths - works everywhere
+  publicDir: 'public',
   resolve: {
     alias: {
       '@shared': path.resolve(__dirname, '../../shared'),
