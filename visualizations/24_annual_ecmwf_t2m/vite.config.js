@@ -8,10 +8,13 @@ const __dirname = path.dirname(__filename);
 
 export default defineConfig({
   plugins: [react()],
-  base: '/taz-klima-globus/visualizations/24_annual_ecmwf_t2m/dist/',
+  // base: '/taz-klima-globus/visualizations/24_annual_ecmwf_t2m/dist/', // Keep commented for now
+  publicDir: 'public', // This tells Vite to copy public/ to dist/
   resolve: {
     alias: {
       '@shared': path.resolve(__dirname, '../../shared'),
+      'three/webgpu': path.resolve(__dirname, './webgpu-stub.js'),
+      'three/tsl': path.resolve(__dirname, './tsl-stub.js'),
     },
     dedupe: ['three', 'react', 'react-dom', 'react-globe.gl']
   },

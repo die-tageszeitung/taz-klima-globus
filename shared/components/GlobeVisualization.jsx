@@ -19,6 +19,8 @@ const GlobeVisualization = ({
     height: window.innerHeight * 0.7
   });
 
+  const [hoveredPolygon, setHoveredPolygon] = useState(null);
+
   // Handle window resize
   useEffect(() => {
     const handleResize = () => {
@@ -109,9 +111,9 @@ const GlobeVisualization = ({
         globeImageUrl={globeImageUrl}
         bumpImageUrl={bumpImageUrl}
         backgroundColor="#ffffff"
-        lineHoverPrecision={0}
+        lineHoverPrecision={5}
         polygonsData={countries.features || []}
-        polygonAltitude={0}
+        polygonAltitude={0.001}
         polygonCapColor={() => 'rgba(0,0,0,0)'}
         polygonSideColor={() => 'rgba(0,0,0,0)'}
         polygonStrokeColor={() => '#000'}
