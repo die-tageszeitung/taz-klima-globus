@@ -19,8 +19,6 @@ const GlobeVisualization = ({
     height: window.innerHeight * 0.7
   });
 
-  const [hoveredPolygon, setHoveredPolygon] = useState(null);
-
   // Handle window resize
   useEffect(() => {
     const handleResize = () => {
