@@ -8,7 +8,7 @@ const __dirname = path.dirname(__filename);
 
 export default defineConfig({
   plugins: [react()],
-  base: './', // Use relative paths - works everywhere
+  base: '',
   publicDir: 'public',
   resolve: {
     alias: {
@@ -22,6 +22,7 @@ export default defineConfig({
     outDir: 'dist',
     minify: 'esbuild',
     sourcemap: false,
+    assetsDir: 'assets',
   },
   server: {
     port: 3000,
