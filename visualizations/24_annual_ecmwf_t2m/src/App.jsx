@@ -34,9 +34,9 @@ function App() {
       <div id="globeViz" align="center" style={{ height: '100%' }}>
         <GlobeVisualization
           title="2024 Temperature Anomalies"
-          globeImageUrl="/data/2024_anomaly_global.webp"
-          bumpImageUrl="/data/earth-topology.webp"
-          geojsonUrl="/data/ne_110_final_data_reduced.geojson"
+          globeImageUrl="data/2024_anomaly_global.webp"
+          bumpImageUrl="data/earth-topology.webp"
+          geojsonUrl="data/ne_110_final_data_reduced.geojson"
           geojsonPropertyName="GERMAN_NAME"
           valuePropertyName="mean"
         />
