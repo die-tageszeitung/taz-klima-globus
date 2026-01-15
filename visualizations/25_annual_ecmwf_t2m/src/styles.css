@@ -1,0 +1,8 @@
+/* Visualization-specific styles (if any) */
+#wrapper {
+  padding: 10px;
+}
+
+#globeViz {
+  width: 100%;
+}

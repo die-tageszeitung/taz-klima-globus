@@ -5,9 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "npm run dev --workspace=24_annual_ecmwf_t2m",
+    "dev:2024": "npm run dev --workspace=24_annual_ecmwf_t2m",
+    "dev:2025": "npm run dev --workspace=25_annual_ecmwf_t2m",
     "build": "npm run build --workspaces --if-present",
-    "build:24": "npm run build --workspace=24_annual_ecmwf_t2m",
-    "preview": "npm run preview --workspace=24_annual_ecmwf_t2m"
+    "build:2024": "npm run build --workspace=24_annual_ecmwf_t2m",
+    "build:2025": "npm run build --workspace=25_annual_ecmwf_t2m",
+    "preview": "npm run preview --workspace=24_annual_ecmwf_t2m",
+    "preview:2024": "npm run preview --workspace=24_annual_ecmwf_t2m",
+    "preview:2025": "npm run preview --workspace=25_annual_ecmwf_t2m"
   },
   "workspaces": [
     "visualizations/*"

@@ -8,13 +8,29 @@ const GlobeVisualization = ({
   geojsonUrl,
   geojsonPropertyName = 'GERMAN_NAME',
   valuePropertyName = 'mean',
-  height = window.innerHeight * 0.7,
   initialViewPoint = { lat: 30, lng: 10, altitude: 1.5 },
   autoRotateSpeed = 0.35,
 }) => {
   const globeEl = useRef();
   const [countries, setCountries] = useState({ features: [] });
   const [isLoading, setIsLoading] = useState(true);
+  const [dimensions, setDimensions] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight * 0.7
+  });
+
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight * 0.7
+      });
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (!globeEl.current) return;
@@ -39,50 +55,27 @@ const GlobeVisualization = ({
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
-    // Cleanup
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [autoRotateSpeed, initialViewPoint]);
 
   useEffect(() => {
-    if (!globeEl.current) return;
-
-    const globe = globeEl.current;
-
-    // Auto-rotate
-    globe.controls().autoRotate = true;
-    globe.controls().autoRotateSpeed = autoRotateSpeed;
-
-    // Set beginning coordinates
-    globe.pointOfView(initialViewPoint);
-  }, [autoRotateSpeed, initialViewPoint]);
-
-  useEffect(() => {
-    // Load GeoJSON data
     if (!geojsonUrl) {
-      console.log('No GeoJSON URL provided');
       setIsLoading(false);
       return;
     }
 
-    console.log('Loading GeoJSON from:', geojsonUrl);
     setIsLoading(true);
 
     fetch(geojsonUrl)
       .then(res => {
-        console.log('GeoJSON response status:', res.status);
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
         }
         return res.json();
       })
       .then(data => {
-        console.log('GeoJSON loaded successfully:', data);
-        console.log('Number of features:', data.features?.length);
-        if (data.features?.length > 0) {
-          console.log('First feature:', data.features[0]);
-        }
         setCountries(data);
         setIsLoading(false);
       })
@@ -92,10 +85,8 @@ const GlobeVisualization = ({
       });
   }, [geojsonUrl]);
 
-  console.log('Rendering globe with', countries.features?.length || 0, 'polygons');
-
   return (
-    <>
+    <div style={{ width: '100%', height: '100%' }}>
       {isLoading && (
         <div style={{
           position: 'absolute',
@@ -111,29 +102,38 @@ const GlobeVisualization = ({
       )}
       <Globe
         ref={globeEl}
+        width={dimensions.width}
+        height={dimensions.height}
         animateIn={true}
         showAtmosphere={false}
-        height={height}
         globeImageUrl={globeImageUrl}
         bumpImageUrl={bumpImageUrl}
         backgroundColor="#ffffff"
         lineHoverPrecision={0}
         polygonsData={countries.features || []}
-        polygonAltitude={0.001}
+        polygonAltitude={0}
         polygonCapColor={() => 'rgba(0,0,0,0)'}
         polygonSideColor={() => 'rgba(0,0,0,0)'}
         polygonStrokeColor={() => '#000'}
-        polygonLabel={({ properties: d }) => `
-        <div class='overlay-box'>
-          <div class='overlay-text'><b>${d.GERMAN_NAME}</b><br>
-            <big><i>${(d.mean<0?"":"+") + String(Math.round(d.mean * 10) / 10).replace('.',',')}°C</i></big><br>
-            <small>im Vergleich zum<br>Durchschnitt 1961-1990</small>
-          </div>
-        </div>
-      `}
+        polygonLabel={({ properties: d }) => {
+          const value = d?.[valuePropertyName];
+          const name = d?.[geojsonPropertyName];
+
+          if (value === undefined || name === undefined) return '';
+
+          return `
+            <div class='overlay-box'>
+              <div class='overlay-text'>
+                <b>${name}</b><br>
+                <big><i>${(value < 0 ? "" : "+") + String(Math.round(value * 10) / 10).replace('.', ',')}°C</i></big><br>
+                <small>im Vergleich zum<br>Durchschnitt 1961-1990</small>
+              </div>
+            </div>
+          `;
+        }}
         polygonsTransitionDuration={300}
       />
-    </>
+    </div>
   );
 };
 
