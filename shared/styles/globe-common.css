@@ -27,6 +27,24 @@ body {
   margin: 0;
 }
 
+/* Override react-globe.gl's tooltip wrapper */
+.float-tooltip-kap {
+  background: transparent !important;
+  padding: 0 !important;
+  border-radius: 5px !important;
+  color: inherit !important;
+  box-shadow: none !important;
+}
+
+/* Fix react-globe.gl tooltip container */
+.scene-tooltip {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  border-radius: 5px !important;
+}
+
+
 .overlay-box {
   border-width: 1px;
   border-radius: 5px;
