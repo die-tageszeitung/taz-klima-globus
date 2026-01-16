@@ -22,7 +22,7 @@ function App() {
 
   // Load TLE data
   useEffect(() => {
-    fetch('/data/250226_full-catalog-spacetrack_only_debakmpkmrb.txt')
+    fetch('./data/250226_full-catalog-spacetrack_only_debakmpkmrb.txt')
       .then(response => response.text())
       .then(rawData => {
         const tleData = rawData
@@ -205,7 +205,7 @@ function App() {
         ref={globeEl}
 
         // Globe appearance
-        globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
+        globeImageUrl="./data/earth-blue-marble.jpg"
         backgroundColor="#101010"
         atmosphereColor="#4a9eff"
         atmosphereAltitude={0.15}
