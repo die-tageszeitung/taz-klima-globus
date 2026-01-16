@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="de-DE">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Interaktive Visualisierung von Weltraumschrott im Erdorbit" />
+
+  <title>Weltraumschrott Visualisierung | taz.de</title>
+
+  <!-- Preload critical font for better performance -->
+  <link rel="preconnect" href="https://taz.de" />
+
+  <style>
+    /* Critical CSS for initial render - prevent layout shift */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #101010;
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      overflow: hidden;
+    }
+
+    #root {
+      width: 100vw;
+      height: 100vh;
+    }
+
+    /* Loading indicator */
+    .initial-loading {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #ffffff;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div id="root">
+    <!-- Fallback loading indicator -->
+    <div class="initial-loading">Lade Visualisierung...</div>
+  </div>
+
+  <!-- React app entry point -->
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+</html>
