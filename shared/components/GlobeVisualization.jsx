@@ -9,7 +9,7 @@ const GlobeVisualization = ({
   geojsonPropertyName = 'GERMAN_NAME',
   valuePropertyName = 'mean',
   initialViewPoint = { lat: 30, lng: 10, altitude: 1.5 },
-  autoRotateSpeed = 0.35,
+  autoRotateSpeed = 0,
 }) => {
   const globeEl = useRef();
   const [countries, setCountries] = useState({ features: [] });
@@ -111,7 +111,7 @@ const GlobeVisualization = ({
         backgroundColor="#ffffff"
         lineHoverPrecision={5}
         polygonsData={countries.features || []}
-        polygonAltitude={0.1}
+        polygonAltitude={0.001}
         polygonCapColor={() => 'rgba(0,0,0,0)'}
         polygonSideColor={() => 'rgba(0,0,0,0)'}
         polygonStrokeColor={() => '#000'}
