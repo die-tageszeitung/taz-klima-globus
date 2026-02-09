@@ -14,10 +14,10 @@ const GlobeVisualization = ({
   const globeEl = useRef();
   const [countries, setCountries] = useState({ features: [] });
   const [isLoading, setIsLoading] = useState(true);
+  const [hoverD, setHoverD] = useState(null);
 
   // Calculate dimensions directly without state
   const h = window.innerHeight;
-  const [hoverD, setHoverD] = useState(null);
 
   useEffect(() => {
     if (!globeEl.current) return;
