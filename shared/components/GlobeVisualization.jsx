@@ -109,7 +109,7 @@ const GlobeVisualization = ({
         globeImageUrl={globeImageUrl}
         bumpImageUrl={bumpImageUrl}
         backgroundColor="#ffffff"
-        lineHoverPrecision={5}
+        lineHoverPrecision={0}
         polygonsData={countries.features || []}
         polygonAltitude={0.001}
         polygonCapColor={() => 'rgba(0,0,0,0)'}
