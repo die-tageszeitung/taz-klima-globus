@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import Globe from 'react-globe.gl';
 
 const GlobeVisualization = ({
@@ -14,17 +14,35 @@ const GlobeVisualization = ({
   const globeEl = useRef();
   const [countries, setCountries] = useState({ features: [] });
   const [isLoading, setIsLoading] = useState(true);
-  const [dimensions, setDimensions] = useState({
+  
+  // Initialize dimensions only once
+  const [dimensions, setDimensions] = useState(() => ({
     width: window.innerWidth,
     height: window.innerHeight * 0.7
-  });
+  }));
 
-  // Handle window resize
+  // Create stable reference for initialViewPoint to prevent unnecessary re-renders
+  const stableInitialViewPoint = useMemo(
+    () => initialViewPoint,
+    [initialViewPoint.lat, initialViewPoint.lng, initialViewPoint.altitude]
+  );
+
+  // Handle window resize with threshold to prevent excessive updates
   useEffect(() => {
     const handleResize = () => {
-      setDimensions({
-        width: window.innerWidth,
-        height: window.innerHeight * 0.7
+      const newWidth = window.innerWidth;
+      const newHeight = window.innerHeight * 0.7;
+      
+      // Only update if dimensions changed by more than 10 pixels
+      setDimensions(prevDimensions => {
+        const widthDiff = Math.abs(prevDimensions.width - newWidth);
+        const heightDiff = Math.abs(prevDimensions.height - newHeight);
+        
+        if (widthDiff < 10 && heightDiff < 10) {
+          return prevDimensions;
+        }
+        
+        return { width: newWidth, height: newHeight };
       });
     };
 
@@ -43,7 +61,7 @@ const GlobeVisualization = ({
     globe.controls().autoRotateSpeed = autoRotateSpeed;
 
     // Set beginning coordinates
-    globe.pointOfView(initialViewPoint);
+    globe.pointOfView(stableInitialViewPoint);
 
     // Pause auto-rotation when tab is hidden
     const handleVisibilityChange = () => {
