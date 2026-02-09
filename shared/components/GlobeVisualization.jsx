@@ -38,7 +38,7 @@ const GlobeVisualization = ({
     const globe = globeEl.current;
 
     // Auto-rotate
-    globe.controls().autoRotate = false;
+    globe.controls().autoRotate = true;
     globe.controls().autoRotateSpeed = autoRotateSpeed;
 
     // Set beginning coordinates
@@ -49,7 +49,7 @@ const GlobeVisualization = ({
       if (document.hidden) {
         globe.controls().autoRotate = false;
       } else {
-        globe.controls().autoRotate = false;
+        globe.controls().autoRotate = true;
       }
     };
 
@@ -111,7 +111,7 @@ const GlobeVisualization = ({
         backgroundColor="#ffffff"
         lineHoverPrecision={5}
         polygonsData={countries.features || []}
-        polygonAltitude={0.001}
+        polygonAltitude={1}
         polygonCapColor={() => 'rgba(0,0,0,0)'}
         polygonSideColor={() => 'rgba(0,0,0,0)'}
         polygonStrokeColor={() => '#000'}
