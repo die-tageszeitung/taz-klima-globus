@@ -17,6 +17,7 @@ const GlobeVisualization = ({
 
   // Calculate dimensions directly without state
   const h = window.innerHeight;
+  const [hoverD, setHoverD] = useState(null);
 
   useEffect(() => {
     if (!globeEl.current) return;
@@ -101,6 +102,7 @@ const GlobeVisualization = ({
         polygonCapColor={() => 'rgba(0,0,0,0.01)'}
         polygonSideColor={() => 'rgba(0,0,0,0)'}
         polygonStrokeColor={() => '#000'}
+        onPolygonHover={setHoverD}
         polygonLabel={({ properties: d }) => {
           const value = d?.[valuePropertyName];
           const name = d?.[geojsonPropertyName];
