@@ -104,12 +104,12 @@ const GlobeVisualization = ({
         ref={globeEl}
         width={dimensions.width}
         height={dimensions.height}
-        animateIn={true}
+        animateIn={false}
         showAtmosphere={false}
         globeImageUrl={globeImageUrl}
         bumpImageUrl={bumpImageUrl}
         backgroundColor="#ffffff"
-        lineHoverPrecision={0}
+        lineHoverPrecision={5}
         polygonsData={countries.features || []}
         polygonAltitude={0.001}
         polygonCapColor={() => 'rgba(0,0,0,0)'}
@@ -131,7 +131,6 @@ const GlobeVisualization = ({
             </div>
           `;
         }}
-        onPolygonHover={setHoverD}
         polygonsTransitionDuration={300}
       />
     </div>
