@@ -9,7 +9,6 @@ const GlobeVisualization = ({
   geojsonPropertyName = 'GERMAN_NAME',
   valuePropertyName = 'mean',
   initialViewPoint = { lat: 30, lng: 10, altitude: 1.5 },
-  autoRotateSpeed = 0,
 }) => {
   const globeEl = useRef();
   const [countries, setCountries] = useState({ features: [] });
