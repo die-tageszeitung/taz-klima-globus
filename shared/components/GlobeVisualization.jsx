@@ -32,6 +32,7 @@ const GlobeVisualization = ({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Consolidated globe setup - runs once only
   useEffect(() => {
     if (!globeEl.current) return;
 
@@ -58,7 +59,7 @@ const GlobeVisualization = ({
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [autoRotateSpeed, initialViewPoint]);
+  }, []); // Empty dependency array - run once only
 
   useEffect(() => {
     if (!geojsonUrl) {
@@ -109,7 +110,6 @@ const GlobeVisualization = ({
         globeImageUrl={globeImageUrl}
         bumpImageUrl={bumpImageUrl}
         backgroundColor="#ffffff"
-        lineHoverPrecision={5}
         polygonsData={countries.features || []}
         polygonAltitude={0.001}
         polygonCapColor={() => 'rgba(0,0,0,0)'}
