@@ -14,23 +14,9 @@ const GlobeVisualization = ({
   const globeEl = useRef();
   const [countries, setCountries] = useState({ features: [] });
   const [isLoading, setIsLoading] = useState(true);
-  const [dimensions, setDimensions] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight * 0.7
-  });
 
-  // Handle window resize
-  useEffect(() => {
-    const handleResize = () => {
-      setDimensions({
-        width: window.innerWidth,
-        height: window.innerHeight * 0.7
-      });
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  // Calculate dimensions directly without state
+  const h = window.innerHeight;
 
   useEffect(() => {
     if (!globeEl.current) return;
@@ -102,8 +88,8 @@ const GlobeVisualization = ({
       )}
       <Globe
         ref={globeEl}
-        width={dimensions.width}
-        height={dimensions.height}
+        width={window.innerWidth}
+        height={h * 0.7}
         animateIn={false}
         showAtmosphere={false}
         globeImageUrl={globeImageUrl}
@@ -113,7 +99,7 @@ const GlobeVisualization = ({
         polygonsData={countries.features || []}
         polygonAltitude={0.001}
         polygonCapColor={() => 'rgba(0,0,0,0.01)'}
-        polygonSideColor={() => 'rgba(0,0,0,0.01)'}
+        polygonSideColor={() => 'rgba(0,0,0,0)'}
         polygonStrokeColor={() => '#000'}
         polygonLabel={({ properties: d }) => {
           const value = d?.[valuePropertyName];
