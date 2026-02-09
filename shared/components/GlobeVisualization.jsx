@@ -26,7 +26,7 @@ const GlobeVisualization = ({
 
     // Auto-rotate
     globe.controls().autoRotate = false;
-    globe.controls().autoRotateSpeed = autoRotateSpeed;
+    globe.controls().autoRotateSpeed = 0;
 
     // Set beginning coordinates
     globe.pointOfView(initialViewPoint);
