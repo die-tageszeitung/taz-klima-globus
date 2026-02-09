@@ -131,6 +131,7 @@ const GlobeVisualization = ({
             </div>
           `;
         }}
+        onPolygonHover={setHoverD}
         polygonsTransitionDuration={300}
       />
     </div>
