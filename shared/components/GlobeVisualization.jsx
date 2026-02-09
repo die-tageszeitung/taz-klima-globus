@@ -25,8 +25,8 @@ const GlobeVisualization = ({
     const globe = globeEl.current;
 
     // Auto-rotate
-    globe.controls().autoRotate = false;
-    globe.controls().autoRotateSpeed = 0;
+    globe.controls().autoRotate = true;
+    globe.controls().autoRotateSpeed = autoRotateSpeed;
 
     // Set beginning coordinates
     globe.pointOfView(initialViewPoint);
@@ -36,7 +36,7 @@ const GlobeVisualization = ({
       if (document.hidden) {
         globe.controls().autoRotate = false;
       } else {
-        globe.controls().autoRotate = false;
+        globe.controls().autoRotate = true;
       }
     };
 
