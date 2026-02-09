@@ -9,6 +9,7 @@ const GlobeVisualization = ({
   geojsonPropertyName = 'GERMAN_NAME',
   valuePropertyName = 'mean',
   initialViewPoint = { lat: 30, lng: 10, altitude: 1.5 },
+  autoRotateSpeed = 0.35,
 }) => {
   const globeEl = useRef();
   const [countries, setCountries] = useState({ features: [] });
@@ -37,7 +38,7 @@ const GlobeVisualization = ({
     const globe = globeEl.current;
 
     // Auto-rotate
-    globe.controls().autoRotate = true;
+    globe.controls().autoRotate = false;
     globe.controls().autoRotateSpeed = autoRotateSpeed;
 
     // Set beginning coordinates
@@ -48,7 +49,7 @@ const GlobeVisualization = ({
       if (document.hidden) {
         globe.controls().autoRotate = false;
       } else {
-        globe.controls().autoRotate = true;
+        globe.controls().autoRotate = false;
       }
     };
 
