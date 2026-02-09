@@ -14,6 +14,7 @@ const GlobeVisualization = ({
   const globeEl = useRef();
   const [countries, setCountries] = useState({ features: [] });
   const [isLoading, setIsLoading] = useState(true);
+  const [hoverD, setHoverD] = useState();
   const [dimensions, setDimensions] = useState({
     width: window.innerWidth,
     height: window.innerHeight * 0.7
