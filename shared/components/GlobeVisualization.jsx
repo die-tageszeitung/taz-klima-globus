@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useMemo } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Globe from 'react-globe.gl';
 
 const GlobeVisualization = ({
@@ -14,35 +14,17 @@ const GlobeVisualization = ({
   const globeEl = useRef();
   const [countries, setCountries] = useState({ features: [] });
   const [isLoading, setIsLoading] = useState(true);
-  
-  // Initialize dimensions only once
-  const [dimensions, setDimensions] = useState(() => ({
+  const [dimensions, setDimensions] = useState({
     width: window.innerWidth,
     height: window.innerHeight * 0.7
-  }));
+  });
 
-  // Create stable reference for initialViewPoint to prevent unnecessary re-renders
-  const stableInitialViewPoint = useMemo(
-    () => initialViewPoint,
-    [initialViewPoint.lat, initialViewPoint.lng, initialViewPoint.altitude]
-  );
-
-  // Handle window resize with threshold to prevent excessive updates
+  // Handle window resize
   useEffect(() => {
     const handleResize = () => {
-      const newWidth = window.innerWidth;
-      const newHeight = window.innerHeight * 0.7;
-      
-      // Only update if dimensions changed by more than 10 pixels
-      setDimensions(prevDimensions => {
-        const widthDiff = Math.abs(prevDimensions.width - newWidth);
-        const heightDiff = Math.abs(prevDimensions.height - newHeight);
-        
-        if (widthDiff < 10 && heightDiff < 10) {
-          return prevDimensions;
-        }
-        
-        return { width: newWidth, height: newHeight };
+      setDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight * 0.7
       });
     };
 
@@ -50,7 +32,6 @@ const GlobeVisualization = ({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Consolidated globe setup - runs once only
   useEffect(() => {
     if (!globeEl.current) return;
 
@@ -61,7 +42,7 @@ const GlobeVisualization = ({
     globe.controls().autoRotateSpeed = autoRotateSpeed;
 
     // Set beginning coordinates
-    globe.pointOfView(stableInitialViewPoint);
+    globe.pointOfView(initialViewPoint);
 
     // Pause auto-rotation when tab is hidden
     const handleVisibilityChange = () => {
@@ -77,7 +58,7 @@ const GlobeVisualization = ({
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, []); // Empty dependency array - run once only
+  }, [autoRotateSpeed, initialViewPoint]);
 
   useEffect(() => {
     if (!geojsonUrl) {
@@ -123,13 +104,14 @@ const GlobeVisualization = ({
         ref={globeEl}
         width={dimensions.width}
         height={dimensions.height}
-        animateIn={false}
+        animateIn={true}
         showAtmosphere={false}
         globeImageUrl={globeImageUrl}
         bumpImageUrl={bumpImageUrl}
         backgroundColor="#ffffff"
+        lineHoverPrecision={5}
         polygonsData={countries.features || []}
-        polygonAltitude={0.06}
+        polygonAltitude={0.1}
         polygonCapColor={() => 'rgba(0,0,0,0)'}
         polygonSideColor={() => 'rgba(0,0,0,0)'}
         polygonStrokeColor={() => '#000'}
