@@ -14,10 +14,23 @@ const GlobeVisualization = ({
   const globeEl = useRef();
   const [countries, setCountries] = useState({ features: [] });
   const [isLoading, setIsLoading] = useState(true);
-  const [hoverD, setHoverD] = useState(null);
+  const [dimensions, setDimensions] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight * 0.7
+  });
 
-  // Calculate dimensions directly without state
-  const h = window.innerHeight;
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight * 0.7
+      });
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (!globeEl.current) return;
@@ -89,20 +102,19 @@ const GlobeVisualization = ({
       )}
       <Globe
         ref={globeEl}
-        width={window.innerWidth}
-        height={h * 0.7}
-        animateIn={false}
+        width={dimensions.width}
+        height={dimensions.height}
+        animateIn={true}
         showAtmosphere={false}
         globeImageUrl={globeImageUrl}
         bumpImageUrl={bumpImageUrl}
         backgroundColor="#ffffff"
-        lineHoverPrecision={0}
+        lineHoverPrecision={5}
         polygonsData={countries.features || []}
         polygonAltitude={0.001}
-        polygonCapColor={() => 'rgba(0,0,0,0.01)'}
+        polygonCapColor={() => 'rgba(0,0,0,0)'}
         polygonSideColor={() => 'rgba(0,0,0,0)'}
         polygonStrokeColor={() => '#000'}
-        onPolygonHover={setHoverD}
         polygonLabel={({ properties: d }) => {
           const value = d?.[valuePropertyName];
           const name = d?.[geojsonPropertyName];
