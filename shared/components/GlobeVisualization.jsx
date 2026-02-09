@@ -112,8 +112,8 @@ const GlobeVisualization = ({
         lineHoverPrecision={0}
         polygonsData={countries.features || []}
         polygonAltitude={0.001}
-        polygonCapColor={() => 'rgba(0,0,0,0)'}
-        polygonSideColor={() => 'rgba(0,0,0,0)'}
+        polygonCapColor={() => 'rgba(0,0,0,0.01)'}
+        polygonSideColor={() => 'rgba(0,0,0,0.01)'}
         polygonStrokeColor={() => '#000'}
         polygonLabel={({ properties: d }) => {
           const value = d?.[valuePropertyName];
