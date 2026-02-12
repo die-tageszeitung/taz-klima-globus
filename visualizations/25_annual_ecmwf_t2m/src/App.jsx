@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import GlobeVisualization from '@shared/components/GlobeVisualization';
 import '@shared/styles/globe-common.css';
 import './styles.css';
 
 function App() {
+
+  const [globeLoaded, setGlobeLoaded] = useState(false);
+
+  const loadGlobe = () => {
+    setGlobeLoaded(true);
+  };
+
   return (
     <>
       <div id="wrapper" align="left">
@@ -31,7 +38,19 @@ function App() {
         </div>
       </div>
 
-      <div id="globeViz" align="center" style={{ height: '100%' }}>
+      <div id="globeViz">
+        {!globeLoaded ? (
+          <div className="globe-placeholder">
+            <img
+              src="data/2025_globusvorschau.webp"
+              alt="Erderhitzung 2025 Vorschau"
+              className="placeholder-image"
+            />
+            <button onClick={loadGlobe} className="load-button">
+              Interaktiven Globus laden
+            </button>
+          </div>
+        ) : (
         <GlobeVisualization
           title="2025 Temperature Anomalies"
           globeImageUrl="data/2025_anomaly_global.webp"
@@ -40,6 +59,7 @@ function App() {
           geojsonPropertyName="GERMAN_NAME"
           valuePropertyName="mean"
         />
+        )}
       </div>
     </>
   );
