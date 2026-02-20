@@ -345,6 +345,21 @@ svg {
   }
 }
 
+/* Desktop-only elements (hidden on mobile) */
+.desktop-only {
+  display: block;
+}
+
+@media (max-width: 490px) {
+  .desktop-only {
+    display: none !important;
+  }
+
+  .mobile-fallback {
+    display: flex !important;
+  }
+}
+
 /* Mobile fallback */
 .mobile-fallback {
   display: none;
@@ -376,6 +391,7 @@ svg {
   color: var(--text-muted);
   margin-bottom: 20px;
   line-height: 1.6;
+  max-width: 400px;
 }
 
 .mobile-fallback a {
@@ -386,20 +402,6 @@ svg {
   text-decoration: none;
   border-radius: 4px;
   font-weight: 600;
-}
-
-@media (max-width: 490px) {
-  #graph-container {
-    display: none;
-  }
-
-  #legend {
-    display: none;
-  }
-
-  .mobile-fallback {
-    display: flex;
-  }
 }
 
 /* Make labels and legend non-selectable */
@@ -471,4 +473,16 @@ svg {
   opacity: 0.7;
   cursor: wait;
   transform: none;
+}
+
+/* Photo circles */
+.node circle.named {
+  fill: var(--surface);
+  stroke: var(--text);
+  stroke-width: 2px;
+}
+
+/* If image exists, it will override the fill */
+.node circle.named[style*="url"] {
+  stroke-width: 0.5px;
 }

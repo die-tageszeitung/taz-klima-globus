@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Das Versorgungsnetzwerk der AfD</title>
-  <script type="module" crossorigin src="./assets/index-CO2v9MLC.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-DsE4h6qS.css">
+  <script type="module" crossorigin src="./assets/index-Bw-7FDmb.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-BC980uku.css">
 </head>
 <body>
   <!-- Title bar -->
@@ -13,7 +13,7 @@
     <div id="title-text">Das Versorgungsnetzwerk der AfD</div>
   </div>
 
-    <!-- Mobile fallback -->
+  <!-- Mobile fallback -->
   <div class="mobile-fallback">
     <img src="./data/network-preview.png" alt="AfD Netzwerk Vorschau">
     <h2>Vollständige Ansicht auf Desktop</h2>
@@ -21,7 +21,7 @@
   </div>
 
   <!-- Loading placeholder -->
-  <div id="load-placeholder">
+  <div id="load-placeholder" class="desktop-only">
     <img
       src="data/network-preview.png"
       alt="AfD Netzwerk Vorschau"
@@ -31,18 +31,18 @@
   </div>
 
   <!-- Main graph container -->
-  <div id="graph-container">
+  <div id="graph-container" class="desktop-only" style="display: none;">
     <svg id="graph-svg"></svg>
   </div>
 
   <!-- Tooltip (hidden by default) -->
-  <div id="tooltip">
+  <div id="tooltip" class="desktop-only">
     <div id="tip-name" class="tip-name"></div>
     <div id="tip-connections" class="tip-connections"></div>
   </div>
 
 <!-- Legend -->
-<div id="legend">
+<div id="legend" class="desktop-only">
   <div class="legend-title">Legende</div>
   <div class="legend-row">
     <div class="legend-dot" style="background:var(--surface);border:1.8px solid var(--text);"></div>
@@ -73,10 +73,13 @@
     <div class="legend-line-sample" style="background:var(--col-mitglied);height:6px;border-radius:3px;opacity:0.6;"></div>
     Mitglied
   </div>
+  <div class="legend-row">
+    Fotos: dpa
+  </div>
 </div>
 
   <!-- Empty state (shown while loading or on error) -->
-  <div id="empty-state">
+  <div id="empty-state" class="desktop-only">
     <h2 id="empty-title">Daten werden geladen…</h2>
     <p id="empty-body">Verbindung wird hergestellt.</p>
   </div>

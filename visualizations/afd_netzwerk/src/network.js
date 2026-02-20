@@ -10,6 +10,17 @@ import {
   RELATIONSHIP_NAHESTEHEND
 } from './app.js';
 
+function getSafeId(id) {
+  return id
+    .toLowerCase()
+    .replace(/[,\.]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/ä/g, 'ae')
+    .replace(/ö/g, 'oe')
+    .replace(/ü/g, 'ue')
+    .replace(/ß/g, 'ss');
+}
+
 /**
  * Get display name for relationship (tooltip-friendly)
  */
@@ -62,7 +73,9 @@ export function renderGraph(nodes, edges) {
   svg.call(zoom);
 
   // Define arrow markers for directed edges
-  g.append('defs').selectAll('marker')
+  const defs = g.append('defs');
+
+  defs.selectAll('marker')
     .data(['beschäftigt'])
     .join('marker')
     .attr('id', d => `arrow-${d}`)
@@ -141,11 +154,51 @@ export function renderGraph(nodes, edges) {
     .on('mousemove', moveTooltip)
     .on('mouseleave', hideTooltip);
 
-  // Draw circles for people
-  nodeGroups.filter(d => !d.institution)
+  // Draw circles for anonymous people (gray, no photos)
+  nodeGroups.filter(d => d.anonymous && !d.institution)
     .append('circle')
     .attr('r', d => getNodeRadius(d))
-    .attr('class', d => d.anonymous ? 'anonymous' : 'named');
+    .attr('class', 'anonymous');
+
+// Draw circles for named people
+nodeGroups.filter(d => !d.anonymous && !d.institution)
+  .append('circle')
+  .attr('r', d => getNodeRadius(d))
+  .attr('class', 'named')
+  .attr('data-photo-id', d => getSafeId(d.id));
+
+  // After rendering, try to load photos
+  nodeGroups.filter(d => !d.anonymous && !d.institution)
+    .each(function(d) {
+      const circle = d3.select(this).select('circle');
+      const photoId = getSafeId(d.id);
+      const imageUrl = `data/faces/${photoId}.jpg`;
+
+      // Test if image exists
+      const img = new Image();
+      img.onload = () => {
+        // Image exists - apply pattern
+        defs.append('pattern')
+          .attr('id', `photo-${photoId}`)
+          .attr('patternUnits', 'objectBoundingBox')
+          .attr('width', 1)
+          .attr('height', 1)
+          .append('image')
+          .attr('href', imageUrl)
+          .attr('width', 40)
+          .attr('height', 40)
+          .attr('x', -6)
+          .attr('y', -6)
+          .attr('preserveAspectRatio', 'xMidYMid slice');
+
+        circle.style('fill', `url(#photo-${photoId})`);
+      };
+      img.onerror = () => {
+        // Image doesn't exist - keep white fill
+        // Do nothing, CSS fallback applies
+      };
+      img.src = imageUrl;
+    });
 
   // Draw diamonds for institutions
   nodeGroups.filter(d => d.institution)
