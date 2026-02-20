@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Das Versorgungsnetzwerk der AfD</title>
+  <script type="module" crossorigin src="./assets/index-DZ6vM1ki.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-DA39CEY3.css">
+</head>
+<body>
+  <!-- Title bar -->
+  <div id="title-bar">
+    <div id="title-text">Das Versorgungsnetzwerk der AfD</div>
+  </div>
+
+  <!-- Main graph container -->
+  <div id="graph-container">
+    <svg id="graph-svg"></svg>
+  </div>
+
+  <!-- Tooltip (hidden by default) -->
+  <div id="tooltip">
+    <div id="tip-name" class="tip-name"></div>
+    <div id="tip-connections" class="tip-connections"></div>
+  </div>
+
+<!-- Legend -->
+<div id="legend">
+  <div class="legend-title">Legende</div>
+  <div class="legend-row">
+    <div class="legend-dot" style="background:var(--surface);border:1.8px solid var(--text);"></div>
+    Genannte Person
+  </div>
+  <div class="legend-row">
+    <div class="legend-dot" style="background:var(--text-muted);"></div>
+    nicht namentlich benannte Person
+  </div>
+  <div class="legend-row">
+    <div style="width:12px;height:12px;flex-shrink:0;background:var(--surface);border:2px solid var(--col-institution);transform:rotate(45deg);"></div>
+    Institution
+  </div>
+  <div style="height:4px"></div>
+  <div class="legend-row">
+    <div class="legend-line-sample" style="background:var(--col-familial);opacity:0.6;"></div>
+    familiäre Verbindung
+  </div>
+  <div class="legend-row">
+    <div class="legend-line-sample" style="background:var(--col-nahestehend);opacity:0.6;"></div>
+    andere Verbindung
+  </div>
+  <div class="legend-row">
+    <div class="legend-line-sample" style="background:var(--col-employ);"></div>
+    beschäftigt, bzw. beschäftigte
+  </div>
+  <div class="legend-row">
+    <div class="legend-line-sample" style="background:var(--col-mitglied);height:6px;border-radius:3px;opacity:0.6;"></div>
+    Mitglied
+  </div>
+</div>
+
+  <!-- Empty state (shown while loading or on error) -->
+  <div id="empty-state">
+    <h2 id="empty-title">Daten werden geladen…</h2>
+    <p id="empty-body">Verbindung wird hergestellt.</p>
+  </div>
+
+  <!-- Mobile fallback -->
+  <div class="mobile-fallback">
+    <img src="./data/network-preview.png" alt="AfD Netzwerk Vorschau">
+    <h2>Vollständige Ansicht auf Desktop</h2>
+    <p>Diese Netzwerkvisualisierung ist für größere Bildschirme optimiert. Bitte öffnen Sie diese Seite auf einem Desktop-Computer für die volle interaktive Erfahrung.</p>
+    <a href="mailto:?subject=AfD Netzwerk&body=Schau dir diese Visualisierung an (Desktop empfohlen)" >Link per Mail teilen</a>
+  </div>
+
+  <!-- Load the JavaScript -->
+</body>
+</html>

@@ -7,12 +7,14 @@
     "dev": "npm run dev --workspace=24_annual_ecmwf_t2m",
     "dev:2024": "npm run dev --workspace=24_annual_ecmwf_t2m",
     "dev:2025": "npm run dev --workspace=25_annual_ecmwf_t2m",
+    "dev:afd": "npm run dev --workspace=afd_netzwerk",
     "build": "npm run build --workspaces --if-present",
     "build:2024": "npm run build --workspace=24_annual_ecmwf_t2m",
     "build:2025": "npm run build --workspace=25_annual_ecmwf_t2m",
+    "build:afd": "npm run build --workspace=afd_netzwerk",
     "preview": "npm run preview --workspace=24_annual_ecmwf_t2m",
-    "preview:2024": "npm run preview --workspace=24_annual_ecmwf_t2m",
-    "preview:2025": "npm run preview --workspace=25_annual_ecmwf_t2m"
+    "preview:2025": "npm run preview --workspace=25_annual_ecmwf_t2m",
+    "preview:afd": "npm run preview --workspace=afd_netzwerk"
   },
   "workspaces": [
     "visualizations/*"
