@@ -50,8 +50,19 @@ export function renderGraph(nodes, edges) {
 
   const svg = d3.select('#graph-svg');
 
+  // Add pan and zoom
+  const g = svg.append('g');  // Create a group for all graph elements
+
+  const zoom = d3.zoom()
+    .scaleExtent([0.1, 4])  // Min zoom 0.1x, max zoom 4x
+    .on('zoom', (event) => {
+      g.attr('transform', event.transform);
+    });
+
+  svg.call(zoom);
+
   // Define arrow markers for directed edges
-  svg.append('defs').selectAll('marker')
+  g.append('defs').selectAll('marker')
     .data(['beschäftigt'])
     .join('marker')
     .attr('id', d => `arrow-${d}`)
@@ -102,14 +113,14 @@ export function renderGraph(nodes, edges) {
     .force('collision', d3.forceCollide().radius(d => getNodeRadius(d) + 18));
 
   // Render mitglied edges (background)
-  const mitgliedLines = svg.append('g')
+  const mitgliedLines = g.append('g')
     .selectAll('line')
     .data(mitgliedEdges)
     .join('line')
     .attr('class', d => `link ${cssClassForRelationship(d.relationship)}`);
 
   // Render other edges
-  const linkLines = svg.append('g')
+  const linkLines = g.append('g')
     .selectAll('line')
     .data(otherEdges)
     .join('line')
@@ -117,7 +128,7 @@ export function renderGraph(nodes, edges) {
     .attr('marker-end', d => d.relationship === RELATIONSHIP_EMPLOY ? 'url(#arrow-beschäftigt)' : null);
 
   // Render nodes
-  const nodeGroups = svg.append('g')
+  const nodeGroups = g.append('g')
     .selectAll('g')
     .data(graphNodes)
     .join('g')
@@ -168,13 +179,6 @@ export function renderGraph(nodes, edges) {
 
   // Update positions each tick
   simulation.on('tick', () => {
-    const padL = 80, padR = 80, padT = 60, padB = 80;
-
-    graphNodes.forEach(node => {
-      const r = getNodeRadius(node);
-      node.x = Math.max(padL + r, Math.min(width - padR - r, node.x));
-      node.y = Math.max(padT + r, Math.min(height - padB - r, node.y));
-    });
 
     mitgliedLines
       .attr('x1', d => d.source.x)
@@ -236,11 +240,8 @@ function dragStarted(event, d) {
 }
 
 function dragged(event, d) {
-  const container = document.getElementById('graph-container');
-  const r = getNodeRadius(d);
-  const padL = 80, padR = 80, padT = 40, padB = 60;
-  d.fx = Math.max(padL + r, Math.min(container.clientWidth - padR - r, event.x));
-  d.fy = Math.max(padT + r, Math.min(container.clientHeight - padB - r, event.y));
+  d.fx = event.x;
+  d.fy = event.y;
 }
 
 function dragEnded(event, d) {

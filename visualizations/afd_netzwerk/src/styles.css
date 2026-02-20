@@ -91,6 +91,12 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
+  overflow: hidden;  /* Hide overflow */
+  cursor: grab;  /* Show grab cursor */
+}
+
+#graph-container:active {
+  cursor: grabbing;  /* Show grabbing cursor when dragging */
 }
 
 svg {
