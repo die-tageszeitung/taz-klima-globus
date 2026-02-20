@@ -412,3 +412,63 @@ svg {
   -moz-user-select: none;
   -ms-user-select: none;
 }
+
+
+/* Load placeholder */
+#load-placeholder {
+  position: absolute;
+  top: 48px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+}
+
+#load-placeholder img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0.7;
+}
+
+#load-viz-button {
+  position: absolute;
+  padding: 20px 40px;
+  min-width: 280px;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #fff;
+  background: linear-gradient(135deg, rgba(80, 80, 80, 0.5) 0%, rgba(50, 50, 50, 0.5) 100%);
+  border: 3px solid rgba(255, 255, 255, 0.4);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  white-space: normal;
+  backdrop-filter: blur(10px);
+  z-index: 10;
+}
+
+#load-viz-button:hover {
+  background: linear-gradient(135deg, rgba(100, 100, 100, 0.6) 0%, rgba(70, 70, 70, 0.6) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+#load-viz-button:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+#load-viz-button:disabled {
+  opacity: 0.7;
+  cursor: wait;
+  transform: none;
+}
