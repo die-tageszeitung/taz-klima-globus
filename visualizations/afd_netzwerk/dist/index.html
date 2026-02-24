@@ -4,24 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Das Versorgungsnetzwerk der AfD</title>
-  <script type="module" crossorigin src="./assets/index-Bw-7FDmb.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-BC980uku.css">
+  <script type="module" crossorigin src="./assets/index-CvNyRm3o.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-DVWNJCwj.css">
 </head>
 <body>
   <!-- Title bar -->
-  <div id="title-bar">
-    <div id="title-text">Das Versorgungsnetzwerk der AfD</div>
-  </div>
-
-  <!-- Mobile fallback -->
-  <div class="mobile-fallback">
-    <img src="./data/network-preview.png" alt="AfD Netzwerk Vorschau">
-    <h2>Vollständige Ansicht auf Desktop</h2>
-    <p>Diese Netzwerkvisualisierung ist für größere Bildschirme optimiert. Bitte öffnen Sie diese Seite auf einem Desktop-Computer für die volle interaktive Erfahrung.</p>
+  <div id="wrapper" align="left">
+    <h3 id="title">Das Versorgungsnetzwerk der AfD</h3>
   </div>
 
   <!-- Loading placeholder -->
-  <div id="load-placeholder" class="desktop-only">
+  <div id="load-placeholder">
     <img
       src="data/network-preview.png"
       alt="AfD Netzwerk Vorschau"
@@ -31,18 +24,18 @@
   </div>
 
   <!-- Main graph container -->
-  <div id="graph-container" class="desktop-only" style="display: none;">
+  <div id="graph-container" style="display: none;">
     <svg id="graph-svg"></svg>
   </div>
 
   <!-- Tooltip (hidden by default) -->
-  <div id="tooltip" class="desktop-only">
+  <div id="tooltip">
     <div id="tip-name" class="tip-name"></div>
     <div id="tip-connections" class="tip-connections"></div>
   </div>
 
 <!-- Legend -->
-<div id="legend" class="desktop-only">
+<div id="legend">
   <div class="legend-title">Legende</div>
   <div class="legend-row">
     <div class="legend-dot" style="background:var(--surface);border:1.8px solid var(--text);"></div>
@@ -74,12 +67,12 @@
     Mitglied
   </div>
   <div class="legend-row">
-    Fotos: dpa
+    Fotos: dpa, reuters
   </div>
 </div>
 
   <!-- Empty state (shown while loading or on error) -->
-  <div id="empty-state" class="desktop-only">
+  <div id="empty-state">
     <h2 id="empty-title">Daten werden geladen…</h2>
     <p id="empty-body">Verbindung wird hergestellt.</p>
   </div>

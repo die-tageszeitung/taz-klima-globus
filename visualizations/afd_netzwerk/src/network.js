@@ -178,6 +178,7 @@ nodeGroups.filter(d => !d.anonymous && !d.institution)
       const img = new Image();
       img.onload = () => {
         // Image exists - apply pattern
+        d.hasPhoto = true;
         defs.append('pattern')
           .attr('id', `photo-${photoId}`)
           .attr('patternUnits', 'objectBoundingBox')
