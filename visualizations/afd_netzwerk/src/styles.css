@@ -250,7 +250,7 @@ svg {
   border: 1.5px solid var(--text);
   padding: 14px 18px;
   font-size: 0.65rem;
-  line-height: 2;
+  line-height: 1;
   z-index: 20;
   box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
 }
@@ -266,6 +266,7 @@ svg {
   align-items: center;
   gap: 10px;
   color: var(--text-muted);
+  padding: 3px;
 }
 
 .legend-dot {
