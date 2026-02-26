@@ -62,10 +62,10 @@ export function renderGraph(nodes, edges) {
   const svg = d3.select('#graph-svg');
 
   // Add pan and zoom
-  const g = svg.append('g');  // Create a group for all graph elements
+  const g = svg.append('g');
 
   const zoom = d3.zoom()
-    .scaleExtent([0.1, 4])  // Min zoom 0.1x, max zoom 4x
+    .scaleExtent([0.1, 4])
     .on('zoom', (event) => {
       g.attr('transform', event.transform);
     });
@@ -97,9 +97,39 @@ export function renderGraph(nodes, edges) {
   const graphNodes = nodes.map(n => Object.assign({}, n));
   const graphEdges = edges.map(e => Object.assign({}, e));
 
-  // Separate mitglied edges (thick background lines)
+  // ── MULTI-EDGE DETECTION ──────────────────────────────────────────────────
+  // Count how many edges exist between each unordered node pair.
+  // Only edges in the same pair that appear more than once get curved paths.
+  const pairCounts = new Map();
+  for (const e of graphEdges) {
+    const sourceId = typeof e.source === 'object' ? e.source.id : e.source;
+    const targetId = typeof e.target === 'object' ? e.target.id : e.target;
+    const key = [sourceId, targetId].sort().join('||');
+    pairCounts.set(key, (pairCounts.get(key) || 0) + 1);
+  }
+
+  // Set of pair keys where more than one edge exists
+  const multiEdgePairs = new Set(
+    [...pairCounts.entries()]
+      .filter(([, count]) => count > 1)
+      .map(([key]) => key)
+  );
+
+  // Returns true if this edge belongs to a multi-edge pair.
+  // Works both before and after D3 resolves string ids to node objects.
+  function isMultiEdge(edge) {
+    const sourceId = typeof edge.source === 'object' ? edge.source.id : edge.source;
+    const targetId = typeof edge.target === 'object' ? edge.target.id : edge.target;
+    return multiEdgePairs.has([sourceId, targetId].sort().join('||'));
+  }
+
+  // Separate mitglied edges (thick background lines, always straight)
   const mitgliedEdges = graphEdges.filter(e => e.relationship === RELATIONSHIP_MITGLIED);
-  const otherEdges = graphEdges.filter(e => e.relationship !== RELATIONSHIP_MITGLIED);
+  const otherEdges    = graphEdges.filter(e => e.relationship !== RELATIONSHIP_MITGLIED);
+
+  // Within other edges, split into straight (single) and curved (multi)
+  const straightEdges = otherEdges.filter(e => !isMultiEdge(e));
+  const curvedEdges   = otherEdges.filter(e =>  isMultiEdge(e));
 
   // Force simulation
   const centerX = width / 2;
@@ -109,7 +139,6 @@ export function renderGraph(nodes, edges) {
     .force('link', d3.forceLink(graphEdges)
       .id(d => d.id)
       .distance(d => {
-        // Shorter links to institutions to create clusters
         if (d.source.institution || d.target.institution) { return 60; }
         if (d.relationship === RELATIONSHIP_MITGLIED) { return 80; }
         if (d.relationship === RELATIONSHIP_EMPLOY) { return 100; }
@@ -118,29 +147,37 @@ export function renderGraph(nodes, edges) {
       .strength(0.3)
     )
     .force('charge', d3.forceManyBody()
-      .strength(d => d.institution ? -400 : -250)  // Institutions repel more strongly
+      .strength(d => d.institution ? -400 : -250)
     )
     .force('center', d3.forceCenter(centerX, centerY))
     .force('forceX', d3.forceX(centerX).strength(0.03))
     .force('forceY', d3.forceY(centerY).strength(0.03))
     .force('collision', d3.forceCollide().radius(d => getNodeRadius(d) + 18));
 
-  // Render mitglied edges (background)
+  // ── RENDER MITGLIED EDGES (background, always straight lines) ────────────
   const mitgliedLines = g.append('g')
     .selectAll('line')
     .data(mitgliedEdges)
     .join('line')
     .attr('class', d => `link ${cssClassForRelationship(d.relationship)}`);
 
-  // Render other edges
+  // ── RENDER STRAIGHT EDGES (single edges between a pair) ──────────────────
   const linkLines = g.append('g')
     .selectAll('line')
-    .data(otherEdges)
+    .data(straightEdges)
     .join('line')
     .attr('class', d => `link ${cssClassForRelationship(d.relationship)}`)
     .attr('marker-end', d => d.relationship === RELATIONSHIP_EMPLOY ? 'url(#arrow-beschäftigt)' : null);
 
-  // Render nodes
+  // ── RENDER CURVED EDGES (multi-edges between the same pair) ──────────────
+  const linkPaths = g.append('g')
+    .selectAll('path')
+    .data(curvedEdges)
+    .join('path')
+    .attr('class', d => `link ${cssClassForRelationship(d.relationship)}`)
+    .attr('marker-end', d => d.relationship === RELATIONSHIP_EMPLOY ? 'url(#arrow-beschäftigt)' : null);
+
+  // ── RENDER NODES ──────────────────────────────────────────────────────────
   const nodeGroups = g.append('g')
     .selectAll('g')
     .data(graphNodes)
@@ -148,36 +185,34 @@ export function renderGraph(nodes, edges) {
     .attr('class', 'node')
     .call(d3.drag()
       .on('start', (event, d) => dragStarted(event, d))
-      .on('drag', (event, d) => dragged(event, d))
-      .on('end', (event, d) => dragEnded(event, d)))
+      .on('drag',  (event, d) => dragged(event, d))
+      .on('end',   (event, d) => dragEnded(event, d)))
     .on('mouseenter', (event, d) => showTooltip(event, d))
     .on('mousemove', moveTooltip)
     .on('mouseleave', hideTooltip);
 
-  // Draw circles for anonymous people (gray, no photos)
+  // Anonymous people (gray circles, no photos)
   nodeGroups.filter(d => d.anonymous && !d.institution)
     .append('circle')
     .attr('r', d => getNodeRadius(d))
     .attr('class', 'anonymous');
 
-// Draw circles for named people
-nodeGroups.filter(d => !d.anonymous && !d.institution)
-  .append('circle')
-  .attr('r', d => getNodeRadius(d))
-  .attr('class', 'named')
-  .attr('data-photo-id', d => getSafeId(d.id));
+  // Named people
+  nodeGroups.filter(d => !d.anonymous && !d.institution)
+    .append('circle')
+    .attr('r', d => getNodeRadius(d))
+    .attr('class', 'named')
+    .attr('data-photo-id', d => getSafeId(d.id));
 
-  // After rendering, try to load photos
+  // Try to load photos for named people
   nodeGroups.filter(d => !d.anonymous && !d.institution)
     .each(function(d) {
       const circle = d3.select(this).select('circle');
       const photoId = getSafeId(d.id);
       const imageUrl = `data/faces/${photoId}.jpg`;
 
-      // Test if image exists
       const img = new Image();
       img.onload = () => {
-        // Image exists - apply pattern
         d.hasPhoto = true;
         defs.append('pattern')
           .attr('id', `photo-${photoId}`)
@@ -194,14 +229,10 @@ nodeGroups.filter(d => !d.anonymous && !d.institution)
 
         circle.style('fill', `url(#photo-${photoId})`);
       };
-      img.onerror = () => {
-        // Image doesn't exist - keep white fill
-        // Do nothing, CSS fallback applies
-      };
       img.src = imageUrl;
     });
 
-  // Draw diamonds for institutions
+  // Institution diamonds
   nodeGroups.filter(d => d.institution)
     .append('rect')
     .attr('class', 'institution')
@@ -231,7 +262,7 @@ nodeGroups.filter(d => !d.anonymous && !d.institution)
     .attr('dy', 24)
     .text(d => shortenName(d.name, 18));
 
-  // Update positions each tick
+  // ── TICK ──────────────────────────────────────────────────────────────────
   simulation.on('tick', () => {
 
     mitgliedLines
@@ -246,9 +277,14 @@ nodeGroups.filter(d => !d.anonymous && !d.institution)
       .attr('x2', d => edgeEnd(d).x)
       .attr('y2', d => edgeEnd(d).y);
 
+    // Curved paths recalculate their bezier control point each tick
+    linkPaths.attr('d', d => curvedPath(d));
+
     nodeGroups.attr('transform', d => `translate(${d.x},${d.y})`);
   });
 }
+
+// ── GEOMETRY HELPERS ────────────────────────────────────────────────────────
 
 function getNodeRadius(node) {
   return node.institution ? 18 : (node.anonymous ? 7 : 14);
@@ -259,13 +295,17 @@ function shortenName(name, max) {
 }
 
 function cssClassForRelationship(rel) {
-  if (rel === RELATIONSHIP_FAMILIAL) return 'familiäre-verbindung';
-  if (rel === RELATIONSHIP_EMPLOY) return 'beschäftigt';
-  if (rel === RELATIONSHIP_MITGLIED) return 'mitglied';
+  if (rel === RELATIONSHIP_FAMILIAL)    return 'familiäre-verbindung';
+  if (rel === RELATIONSHIP_EMPLOY)      return 'beschäftigt';
+  if (rel === RELATIONSHIP_MITGLIED)    return 'mitglied';
   if (rel === RELATIONSHIP_NAHESTEHEND) return 'nahestehend';
   return 'unknown';
 }
 
+/**
+ * Compute the endpoint of a straight edge, shortened so arrowheads
+ * don't overlap the target node circle.
+ */
 function edgeEnd(d) {
   const dx = d.target.x - d.source.x;
   const dy = d.target.y - d.source.y;
@@ -277,6 +317,55 @@ function edgeEnd(d) {
   };
 }
 
+/**
+ * Compute a quadratic bezier path for a curved (multi-)edge.
+ *
+ * The control point is offset perpendicularly from the midpoint of the
+ * source–target line. The offset direction depends on relationship type:
+ *   - beschäftigt  → curves upward  (negative perpendicular)
+ *   - all others   → curves downward (positive perpendicular)
+ *
+ * The endpoint is shortened so arrowheads land on the node surface.
+ */
+function curvedPath(d) {
+  const sx = d.source.x;
+  const sy = d.source.y;
+  const tx = d.target.x;
+  const ty = d.target.y;
+
+  // Midpoint between source and target
+  const mx = (sx + tx) / 2;
+  const my = (sy + ty) / 2;
+
+  // Perpendicular unit vector (rotated 90° from the edge direction)
+  const dx = tx - sx;
+  const dy = ty - sy;
+  const len = Math.sqrt(dx * dx + dy * dy) || 1;
+  const px = -dy / len;
+  const py =  dx / len;
+
+  // beschäftigt curves in the opposite direction from familial/nahestehend
+  // so that both edges between the same pair are clearly visible
+  const CURVE_AMOUNT = 40;
+  const sign = d.relationship === RELATIONSHIP_EMPLOY ? -1 : 1;
+
+  const cpx = mx + px * CURVE_AMOUNT * sign;
+  const cpy = my + py * CURVE_AMOUNT * sign;
+
+  // Shorten the endpoint toward the control point so the arrowhead
+  // doesn't overlap the target node
+  const r = getNodeRadius(d.target) + 4;
+  const endDx = tx - cpx;
+  const endDy = ty - cpy;
+  const endLen = Math.sqrt(endDx * endDx + endDy * endDy) || 1;
+  const ex = tx - (endDx / endLen) * r;
+  const ey = ty - (endDy / endLen) * r;
+
+  return `M${sx},${sy} Q${cpx},${cpy} ${ex},${ey}`;
+}
+
+// ── ADJACENCY MAP ────────────────────────────────────────────────────────────
+
 function buildAdjacencyMap(nodes, edges) {
   const map = new Map();
   nodes.forEach(n => map.set(n.id, []));
@@ -286,6 +375,8 @@ function buildAdjacencyMap(nodes, edges) {
   });
   return map;
 }
+
+// ── DRAG HANDLERS ────────────────────────────────────────────────────────────
 
 function dragStarted(event, d) {
   if (!event.active) simulation.alphaTarget(0.3).restart();
@@ -304,6 +395,8 @@ function dragEnded(event, d) {
   d.fy = null;
 }
 
+// ── TOOLTIP ───────────────────────────────────────────────────────────────────
+
 function showTooltip(event, d) {
   const tip = document.getElementById('tooltip');
   document.getElementById('tip-name').textContent = d.name;
@@ -318,7 +411,10 @@ function showTooltip(event, d) {
     conns.forEach(c => {
       const row = document.createElement('div');
       row.className = 'tip-conn-row';
-      row.innerHTML = `<span class="tip-conn-type">${getDisplayRelationship(c.relationship)}:</span> ${c.other.replace(/^[?!]/, '')}`;
+      const otherName = typeof c.other === 'object'
+        ? c.other.name
+        : c.other.replace(/^[?!]/, '');
+      row.innerHTML = `<span class="tip-conn-type">${getDisplayRelationship(c.relationship)}:</span> ${otherName}`;
       tipConns.appendChild(row);
     });
   }
@@ -340,76 +436,41 @@ function hideTooltip() {
   document.getElementById('tooltip').style.opacity = '0';
 }
 
+// ── URL PARAMETER ─────────────────────────────────────────────────────────────
+
 /**
- * Check URL for center parameter and pin that node to viewport center
+ * Check URL for ?center= parameter and pin that node to the viewport centre.
+ * Matches exactly on the raw node id (including any ! or ? sigil prefix).
+ * Silently ignored if the node doesn't exist.
  */
 function handleUrlParameter() {
   const urlParams = new URLSearchParams(window.location.search);
   const centerNodeId = urlParams.get('center');
 
-  if (centerNodeId) {
-    const container = document.getElementById('graph-container');
-    const width = container.clientWidth;
-    const height = container.clientHeight;
-    const centerX = width / 2;
-    const centerY = height / 2;
+  if (!centerNodeId) { return; }
 
-    // Find and pin the node
-    for (const node of currentNodes) {
-      if (node.id === centerNodeId) {
-        node.fx = centerX;
-        node.fy = centerY;
+  const container = document.getElementById('graph-container');
+  const centerX = container.clientWidth  / 2;
+  const centerY = container.clientHeight / 2;
 
-        // Highlight it
-        setTimeout(() => {
-          d3.selectAll('.node circle, .node rect')
-            .classed('highlighted', d => d.id === node.id);
-        }, 500);
-
-        console.log('Centered on:', node.name);
-        break;
-      }
+  for (const node of currentNodes) {
+    if (node.id === centerNodeId) {
+      node.fx = centerX;
+      node.fy = centerY;
+      console.log('Centered on:', node.name);
+      break;
+      // No match → silently ignored
     }
   }
 }
 
-function centerOnNode(node) {
-  const container = document.getElementById('graph-container');
-  const width = container.clientWidth;
-  const height = container.clientHeight;
+// ── RESIZE ────────────────────────────────────────────────────────────────────
 
-  console.log('Centering on:', node.name, 'at', node.x, node.y);
-
-  // Calculate how much to move
-  const targetX = width / 2;
-  const targetY = height / 2;
-  const dx = targetX - node.x;
-  const dy = targetY - node.y;
-
-  // Move all nodes
-  currentNodes.forEach(n => {
-    n.x += dx;
-    n.y += dy;
-    // Also update fixed positions if they exist
-    if (n.fx !== null && n.fx !== undefined) n.fx += dx;
-    if (n.fy !== null && n.fy !== undefined) n.fy += dy;
-  });
-
-  // Restart simulation gently
-  simulation.alpha(0.1).restart();
-
-  // Highlight the node
-  d3.selectAll('.node circle, .node rect')
-    .classed('highlighted', d => d.id === node.id);
-}
-
-// Add this at the very end of the file
 window.addEventListener('resize', () => {
-  // Debounce resize events
   clearTimeout(resizeTimeout);
   resizeTimeout = setTimeout(() => {
     if (currentNodes.length > 0) {
       renderGraph(currentNodes, currentEdges);
     }
-  }, 250); // Wait 250ms after resize stops before re-rendering
+  }, 250);
 });
