@@ -250,9 +250,11 @@ svg {
   border: 1.5px solid var(--text);
   padding: 14px 18px;
   font-size: 0.65rem;
-  line-height: 1;
+  line-height: 1.5;
   z-index: 20;
   box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
+  width: 190px;           /* explicit width instead of max-width */
+  overflow: hidden;
 }
 
 #legend .legend-title {
@@ -280,6 +282,19 @@ svg {
   width: 26px;
   height: 2px;
   flex-shrink: 0;
+}
+
+.legend-line-sample-dashed {
+  width: 26px;
+  height: 2px;
+  flex-shrink: 0;
+  background-image: repeating-linear-gradient(
+    to right,
+    currentColor 0px,
+    currentColor 5px,
+    transparent 5px,
+    transparent 8px
+  );
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
