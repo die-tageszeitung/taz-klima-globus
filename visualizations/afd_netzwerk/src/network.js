@@ -93,8 +93,20 @@ export function renderGraph(nodes, edges) {
   // Build adjacency for tooltips
   adjacencyMap = buildAdjacencyMap(nodes, edges);
 
-  // Make copies (D3 mutates)
-  const graphNodes = nodes.map(n => Object.assign({}, n));
+  // Force simulation
+  const centerX = width / 2;
+  const centerY = height / 2;
+
+  const sortedNodes = sortNodesByNeighbourSimilarity(nodes, edges);
+
+  const graphNodes = sortedNodes.map((n, i) => {
+    const angle = (i / nodes.length) * 2 * Math.PI;
+    const r = Math.min(width, height) * 0.35;
+    return Object.assign({}, n, {
+      x: centerX + r * Math.cos(angle),
+      y: centerY + r * Math.sin(angle),
+    });
+  });
   const graphEdges = edges.map(e => Object.assign({}, e));
 
   // ── MULTI-EDGE DETECTION ──────────────────────────────────────────────────
@@ -130,10 +142,6 @@ export function renderGraph(nodes, edges) {
   // Within other edges, split into straight (single) and curved (multi)
   const straightEdges = otherEdges.filter(e => !isMultiEdge(e));
   const curvedEdges   = otherEdges.filter(e =>  isMultiEdge(e));
-
-  // Force simulation
-  const centerX = width / 2;
-  const centerY = height / 2;
 
   simulation = d3.forceSimulation(graphNodes)
     .force('link', d3.forceLink(graphEdges)
@@ -375,6 +383,98 @@ function buildAdjacencyMap(nodes, edges) {
   });
   return map;
 }
+
+  /**
+   * Sort nodes by two-hop neighbour similarity using greedy nearest-neighbour.
+   *
+   * Builds a weighted neighbour set for each node where:
+   *   - direct neighbours score 2 points
+   *   - two-hop neighbours (neighbours of neighbours) score 1 point
+   *
+   * Then greedily orders nodes by picking the unvisited node with the highest
+   * similarity score to the current one. Result: nodes in the same cluster
+   * end up adjacent on the initial circle, so the simulation starts from a
+   * coherent layout rather than a random tangle.
+   */
+  function sortNodesByNeighbourSimilarity(nodes, edges) {
+    // Build direct neighbour sets
+    const neighbours = new Map();
+    for (const node of nodes) {
+      neighbours.set(node.id, new Set());
+    }
+
+    for (const edge of edges) {
+      const sourceId = typeof edge.source === 'object' ? edge.source.id : edge.source;
+      const targetId = typeof edge.target === 'object' ? edge.target.id : edge.target;
+      if (neighbours.has(sourceId)) neighbours.get(sourceId).add(targetId);
+      if (neighbours.has(targetId)) neighbours.get(targetId).add(sourceId);
+    }
+
+    function similarityScore(idA, idB) {
+      const neighboursA = neighbours.get(idA) || new Set();
+      const neighboursB = neighbours.get(idB) || new Set();
+
+      let score = 0;
+
+      for (const nA of neighboursA) {
+        if (neighboursB.has(nA)) {
+          // Shared direct neighbour — strongest signal
+          score += 3;
+        } else {
+          const twoHopNeighbours = neighbours.get(nA) || new Set();
+          for (const twoHop of twoHopNeighbours) {
+            if (neighboursB.has(twoHop)) {
+              // Shared two-hop neighbour
+              score += 2;
+              break;
+            } else {
+              // Check three-hop
+              const threeHopNeighbours = neighbours.get(twoHop) || new Set();
+              for (const threeHop of threeHopNeighbours) {
+                if (neighboursB.has(threeHop)) {
+                  score += 1;
+                  break; // Only count once per twoHop to avoid over-weighting hubs
+                }
+              }
+            }
+          }
+        }
+      }
+
+      return score;
+    }
+
+    // Greedy nearest-neighbour ordering:
+    // seed with the highest-degree node, then always pick the most similar next
+    const remaining = new Set(nodes.map(n => n.id));
+    const sorted = [];
+
+    let current = [...remaining].reduce((best, id) =>
+      (neighbours.get(id) || new Set()).size > (neighbours.get(best) || new Set()).size ? id : best
+    );
+
+    remaining.delete(current);
+    sorted.push(current);
+
+    while (remaining.size > 0) {
+      let bestNext = null;
+      let bestScore = -1;
+
+      for (const candidateId of remaining) {
+        const score = similarityScore(current, candidateId);
+        if (score > bestScore) {
+          bestScore = score;
+          bestNext = candidateId;
+        }
+      }
+
+      remaining.delete(bestNext);
+      sorted.push(bestNext);
+      current = bestNext;
+    }
+
+    return sorted.map(id => nodes.find(n => n.id === id));
+  }
 
 // ── DRAG HANDLERS ────────────────────────────────────────────────────────────
 
