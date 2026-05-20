@@ -14,7 +14,9 @@
     "build:afd": "npm run build --workspace=afd_netzwerk",
     "preview": "npm run preview --workspace=24_annual_ecmwf_t2m",
     "preview:2025": "npm run preview --workspace=25_annual_ecmwf_t2m",
-    "preview:afd": "npm run preview --workspace=afd_netzwerk"
+    "preview:afd": "npm run preview --workspace=afd_netzwerk",
+    "dev:elninoforecast": "npm run dev --workspace=2605_el_nino_forecast",
+    "build:elninoforecast": "npm run build --workspace=2605_el_nino_forecast"
   },
   "workspaces": [
     "visualizations/*"
